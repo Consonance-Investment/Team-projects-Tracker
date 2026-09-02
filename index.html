@@ -1113,11 +1113,11 @@ const API_CONFIG = {
   // "key" will be one of: tasks, team, lastSeen, activity, notifyAs, projects, savedViews, automationSettings, chatMessages, embedUrl
 };
 const SUPABASE_CONFIG = {
-  url: 'https://plfmtnqtzxwjdsfvujiq.supabase.co',
-  anonKey: 'sb_publishable_aZ3dZkOG5kk4msQzMOLUTg_DTNdsJgd',
+  url: 'https://tyjrrmymuxaolreuctnt.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5anJybXltdXhhb2xyZXVjdG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTk2NzksImV4cCI6MjEwMzkzNTY3OX0.GXiUYc9GwHYKDMYo0-umNW6LwPR1DAiMguScltoA7yo',
   table: 'kv_store'
 };
-
+  
 function authToken(){
   return (typeof currentSession !== 'undefined' && currentSession && currentSession.access_token) ? currentSession.access_token : SUPABASE_CONFIG.anonKey;
 }
