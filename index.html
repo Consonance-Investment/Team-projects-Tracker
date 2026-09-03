@@ -54,7 +54,7 @@ window.__supabaseLibReady = loadScriptWithFallback([
   body{margin:0;background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
   #shell{display:flex;height:100vh;overflow:hidden;}
 
-  #sidebar{width:224px;flex:0 0 224px;background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#dfe3f0;display:flex;flex-direction:column;padding:16px 12px;overflow-y:auto;}
+  #sidebar{width:224px;flex:0 0 224px;background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#dfe3f0;display:flex;flex-direction:column;padding:16px 12px;overflow-y:auto;overflow-x:hidden;}
   .ws-name{font-size:13px;font-weight:800;color:#fff;padding:4px 8px 14px;letter-spacing:-.01em;}
   .nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8890ac;font-weight:700;padding:10px 8px 6px;}
   .nav-item{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:8px;font-size:13px;font-weight:600;color:#c7cce0;cursor:pointer;border:1px solid transparent;}
@@ -1114,10 +1114,10 @@ const API_CONFIG = {
 };
 const SUPABASE_CONFIG = {
   url: 'https://tyjrrmymuxaolreuctnt.supabase.co',
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5anJybXltdXhhb2xyZXVjdG50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNTk2NzksImV4cCI6MjEwMzkzNTY3OX0.GXiUYc9GwHYKDMYo0-umNW6LwPR1DAiMguScltoA7yo',
+  anonKey: 'sb_publishable_riMc_ZE6ZozZhRTbr1fnWw_9V0YQRYc',
   table: 'kv_store'
 };
-  
+
 function authToken(){
   return (typeof currentSession !== 'undefined' && currentSession && currentSession.access_token) ? currentSession.access_token : SUPABASE_CONFIG.anonKey;
 }
@@ -1308,11 +1308,11 @@ function enterApp(){
 function renderUserBadge(){
   var el = document.getElementById('userBadge');
   if(!el || !currentProfile) return;
-  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:8px;">'+
-    '<span class="avatar" style="background:'+(isAdmin()?'var(--accent)':'#3A4266')+';color:'+(isAdmin()?'#241c00':'#fff')+';">'+(currentProfile.display_name||'?').slice(0,2).toUpperCase()+'</span>'+
-    '<div style="flex:1;overflow:hidden;"><div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+currentProfile.display_name+'</div>'+
-    '<div style="font-size:10px;color:#8890ac;text-transform:capitalize;">'+currentProfile.role+'</div></div>'+
-    '<button class="btn btn-ghost" id="signOutBtn" style="padding:4px 8px;font-size:11px;">Sign out</button>'+
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:8px;min-width:0;">'+
+    '<span class="avatar" style="background:'+(isAdmin()?'var(--accent)':'#3A4266')+';color:'+(isAdmin()?'#241c00':'#fff')+';flex:0 0 26px;">'+(currentProfile.display_name||'?').slice(0,2).toUpperCase()+'</span>'+
+    '<div style="flex:1;min-width:0;overflow:hidden;"><div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+(currentProfile.display_name||'')+'">'+(currentProfile.display_name||'Unnamed')+'</div>'+
+    '<div style="font-size:10px;color:#8890ac;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+(currentProfile.role||'')+'">'+(currentProfile.role||'member')+'</div></div>'+
+    '<button class="btn btn-ghost" id="signOutBtn" style="padding:4px 8px;font-size:11px;flex:0 0 auto;">Sign out</button>'+
     '</div>';
   document.getElementById('signOutBtn').addEventListener('click', async function(){
     await supabaseClient.auth.signOut();
@@ -1570,6 +1570,12 @@ function runAutomationActions(rule, t){
     } else if(a.type==='notify'){
       var person = a.value==='assignee' ? t.assignee : a.value;
       logActivity('Automation <b>'+rule.name+'</b>: notified <b>'+(person||'someone')+'</b> about "'+t.deliverable+'"');
+      /* Reuse the same live-notification plumbing the due-soon rule uses:
+         if the person being notified is this device's "Notify me as" user
+         and the browser has granted permission, pop a real notification. */
+      if(person && person===notifyAsName && typeof Notification !== 'undefined' && Notification.permission==='granted'){
+        try{ new Notification('Automation: '+rule.name, { body: '"'+t.deliverable+'" \u2014 '+person+' was notified' }); }catch(e){}
+      }
     }
   });
 }
@@ -1840,7 +1846,7 @@ function renderList(){
           body += '<tr data-id="'+t.id+'" data-status="'+status+'">'+
             '<td class="drag-handle" draggable="true" data-id="'+t.id+'" title="Drag to reorder">&#8942;&#8942;</td>'+
             '<td><input type="checkbox" class="row-check" data-id="'+t.id+'"'+(selectedIds.has(t.id)?' checked':'')+'></td>'+
-            '<td class="name-cell clickable" data-id="'+t.id+'">'+(t.isMilestone?'\u25c6 ':'')+t.deliverable+(t.subtasks&&t.subtasks.length?' <span class="n">('+t.subtasks.filter(function(s){return s.done;}).length+'/'+t.subtasks.length+')</span>':'')+(t.approvalStatus==='Pending'?' <span class="status-pill" style="background:#B45309;">Pending Approval</span>':'')+(t.approvalStatus==='Rejected'?' <span class="status-pill" style="background:var(--cancelled);">Rejected</span>':'')+(isBlocked(t)?' <span class="status-pill" style="background:#64748B;">Blocked</span>':'')+((t.tags&&t.tags.length)?t.tags.map(function(tag){return ' <span class="tag-chip" style="margin:0;">'+tag+'</span>';}).join(''):'')+'</td>'+
+            '<td class="name-cell clickable" data-id="'+t.id+'">'+(t.isMilestone?'\u25c6 ':'')+t.deliverable+(t.subtasks&&t.subtasks.length?' <span class="n">('+t.subtasks.filter(function(s){return s.done;}).length+'/'+t.subtasks.length+')</span>':'')+(t.approvalStatus==='Rejected'?' <span class="status-pill" style="background:var(--cancelled);">Rejected</span>':'')+(isBlocked(t)?' <span class="status-pill" style="background:#64748B;">Blocked</span>':'')+((t.tags&&t.tags.length)?t.tags.map(function(tag){return ' <span class="tag-chip" style="margin:0;">'+tag+'</span>';}).join(''):'')+'</td>'+
             '<td><div class="assignee-cell">'+avatarHtml(t.assignee)+'<select class="chip-select assignee-select" data-id="'+t.id+'">'+
               team.map(function(p){ return '<option value="'+p+'"'+(p===t.assignee?' selected':'')+'>'+p+'</option>'; }).join('') +
             '</select></div></td>'+
@@ -3390,6 +3396,7 @@ function startNotifyPolling(){
     var freshLastSeen = await loadJSON('lastSeen', lastSeen, true);
     var freshTeam = await loadJSON('team', team, true);
     tasks = freshTasks; lastSeen = freshLastSeen; team = freshTeam;
+    tasks.forEach(normalizeApprovals);
     var n = unreadCountFor(notifyAsName);
     if(n > notifyPrevUnread && typeof Notification !== 'undefined' && Notification.permission==='granted'){
       try{
