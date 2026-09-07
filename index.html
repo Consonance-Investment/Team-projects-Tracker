@@ -1098,12 +1098,18 @@ function freshApprovalChain(names){
   return (names||[]).filter(function(n){ return n; }).map(function(n){ return { name:n, status:'Pending' }; });
 }
 function migrateTaskApprovals(t){
-  if(!t.approvalChain){
-    t.approvalChain = t.supervisor ? freshApprovalChain([t.supervisor]) : [];
+  if(!t.approvalChain || !t.approvalChain.length){
+    t.approvalChain = t.supervisor ? freshApprovalChain([t.supervisor]) : (t.approvalChain||[]);
     if(t.approvalChain.length){
       if(t.approvalStatus==='Approved') t.approvalChain[0].status='Approved';
       else if(t.approvalStatus==='Rejected') t.approvalChain[0].status='Rejected';
     }
+  } else {
+    /* Sanitize chains carried over from older/legacy data where an entry
+       may be missing a valid name \u2014 without this, approvalChainSummary()
+       would print "undefined" instead of that task's own supervisor. */
+    var cleaned = t.approvalChain.filter(function(a){ return a && a.name; }).map(function(a){ return { name:a.name, status:a.status||'Pending' }; });
+    t.approvalChain = cleaned.length ? cleaned : (t.supervisor ? freshApprovalChain([t.supervisor]) : []);
   }
   syncApprovalStatus(t);
 }
@@ -1121,8 +1127,8 @@ function currentApprovalStepIndex(t){
   return -1;
 }
 function approvalChainSummary(t){
-  var chain = t.approvalChain || [];
-  if(!chain.length) return '\u2014';
+  var chain = (t.approvalChain || []).filter(function(a){ return a && a.name; });
+  if(!chain.length) return t.supervisor || '\u2014';
   if(chain.length===1) return chain[0].name;
   var stepIdx = currentApprovalStepIndex(t);
   var suffix = stepIdx>=0 ? ' ('+(stepIdx+1)+'/'+chain.length+')' : (syncApprovalStatus(t)==='Rejected' ? ' (rejected)' : ' (done)');
@@ -2640,7 +2646,7 @@ function selField(id, label, options, value){
 
 function renderApprovalSection(t){
   var appEl = document.getElementById('tm-approval');
-  t.approvalChain = t.approvalChain || [];
+  t.approvalChain = (t.approvalChain || []).filter(function(a){ return a && a.name; });
   var stepIdx = currentApprovalStepIndex(t);
   var overall = syncApprovalStatus(t);
 
