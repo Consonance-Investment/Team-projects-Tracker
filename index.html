@@ -1545,15 +1545,25 @@ function positionTour(step){
   var tip = document.getElementById('tourTooltip');
   var targetEl = step.target ? document.querySelector(step.target) : null;
   if(targetEl){
-    var r = targetEl.getBoundingClientRect();
-    hl.style.display = 'block';
-    hl.style.left = (r.left-6)+'px'; hl.style.top = (r.top-6)+'px';
-    hl.style.width = (r.width+12)+'px'; hl.style.height = (r.height+12)+'px';
-    tip.style.transform = '';
-    var tipTop = r.bottom + 14;
-    if(tipTop + 170 > window.innerHeight) tipTop = Math.max(10, r.top - 175);
-    var tipLeft = Math.min(Math.max(10, r.left), window.innerWidth - 290);
-    tip.style.top = tipTop+'px'; tip.style.left = tipLeft+'px';
+    targetEl.scrollIntoView({ block: 'center', inline: 'nearest' });
+    /* Wait two frames so the scroll has actually painted before we measure
+       the target \u2014 otherwise getBoundingClientRect() can still return
+       off-screen coordinates for targets low in the scrollable sidebar
+       (like #notifyAsSelect), which pushes the tooltip's Next/Skip buttons
+       off-screen too and makes the tour look stuck. */
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        var r = targetEl.getBoundingClientRect();
+        hl.style.display = 'block';
+        hl.style.left = (r.left-6)+'px'; hl.style.top = (r.top-6)+'px';
+        hl.style.width = (r.width+12)+'px'; hl.style.height = (r.height+12)+'px';
+        tip.style.transform = '';
+        var tipTop = r.bottom + 14;
+        if(tipTop + 170 > window.innerHeight) tipTop = Math.max(10, r.top - 175);
+        var tipLeft = Math.min(Math.max(10, r.left), window.innerWidth - 290);
+        tip.style.top = tipTop+'px'; tip.style.left = tipLeft+'px';
+      });
+    });
   } else {
     hl.style.display = 'none';
     tip.style.top = '40%'; tip.style.left = '50%'; tip.style.transform = 'translate(-50%,-50%)';
