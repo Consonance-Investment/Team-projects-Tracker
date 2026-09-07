@@ -54,7 +54,7 @@ window.__supabaseLibReady = loadScriptWithFallback([
   body{margin:0;background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
   #shell{display:flex;height:100vh;overflow:hidden;}
 
-  #sidebar{width:224px;flex:0 0 224px;background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#dfe3f0;display:flex;flex-direction:column;padding:16px 12px;overflow-y:auto;overflow-x:hidden;}
+  #sidebar{width:224px;flex:0 0 224px;background:linear-gradient(180deg,var(--navy),var(--navy-2));color:#dfe3f0;display:flex;flex-direction:column;padding:16px 12px;overflow-y:auto;}
   .ws-name{font-size:13px;font-weight:800;color:#fff;padding:4px 8px 14px;letter-spacing:-.01em;}
   .nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8890ac;font-weight:700;padding:10px 8px 6px;}
   .nav-item{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:8px;font-size:13px;font-weight:600;color:#c7cce0;cursor:pointer;border:1px solid transparent;}
@@ -324,6 +324,34 @@ window.__supabaseLibReady = loadScriptWithFallback([
   .role-row .rr-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .role-row select{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px;background:var(--surface);color:var(--ink);}
 
+  /* ---------- Automation rules ---------- */
+  .rule-card{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--surface);}
+  .rule-card-head{display:flex;align-items:center;gap:8px;}
+  .rule-card-head .rc-name{flex:1;font-weight:700;font-size:13px;}
+  .rule-card-desc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5;}
+  .rule-card-actions{display:flex;gap:6px;margin-top:8px;}
+  .rule-card-actions button{padding:4px 9px;font-size:11px;}
+  .rf-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
+  .rf-row label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
+  .rf-row select,.rf-row input{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;background:var(--surface);color:var(--ink);}
+  .rf-cond-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+  .rf-cond-row .rf-cond-del{color:#c3c7d6;cursor:pointer;padding:0 4px;}
+  .rf-cond-row .rf-cond-del:hover{color:var(--cancelled);}
+
+  /* ---------- Approval chain ---------- */
+  .chain-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #F1F2F7;font-size:12.5px;}
+  .chain-row:last-child{border-bottom:none;}
+  .chain-step-num{width:20px;height:20px;border-radius:50%;background:#F1F2F7;color:var(--muted);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 20px;}
+  .chain-step-num.current{background:var(--accent);color:#241c00;}
+  .chain-step-num.done{background:var(--completed);color:#fff;}
+  .chain-step-num.rejected{background:var(--cancelled);color:#fff;}
+  .chain-name{flex:1;}
+  .chain-status-tag{font-size:10px;font-weight:800;text-transform:uppercase;padding:2px 8px;border-radius:100px;color:#fff;}
+  .chain-remove{color:#c3c7d6;cursor:pointer;}
+  .chain-remove:hover{color:var(--cancelled);}
+  .chain-add-row{display:flex;gap:6px;margin-top:8px;}
+  .chain-add-row select{flex:1;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12.5px;}
+
   /* ---------- Guest (read-only) mode ---------- */
   body.guest-mode .drag-handle,
   body.guest-mode .row-del,
@@ -349,16 +377,6 @@ window.__supabaseLibReady = loadScriptWithFallback([
   body.guest-mode .board-card{ pointer-events:none; }
   body.guest-mode .tm-body input[type="checkbox"]{ pointer-events:none; opacity:.6; }
   .guest-banner{background:#EEF1F8;color:var(--muted);font-size:11.5px;font-weight:700;padding:6px 10px;border-radius:8px;margin:8px;text-align:center;}
-
-  /* ---------- Automation rule builder ---------- */
-  #automationRuleOverlay{display:none;position:fixed;inset:0;background:rgba(15,20,36,.5);z-index:120;align-items:center;justify-content:center;padding:30px;}
-  #automationRuleOverlay.open{display:flex;}
-  #automationRuleModal{background:var(--surface);border-radius:14px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;}
-  .ar-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap;}
-  .ar-row select,.ar-row input{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px;color:var(--ink);background:var(--surface);}
-  .ar-row input{flex:1;min-width:120px;}
-  .ar-row .ar-remove{cursor:pointer;color:#c3c7d6;font-size:15px;margin-left:auto;}
-  .ar-row .ar-remove:hover{color:var(--cancelled);}
 
   /* ---------- Onboarding tour ---------- */
   #tourOverlay{display:none;position:fixed;inset:0;z-index:499;}
@@ -424,12 +442,16 @@ window.__supabaseLibReady = loadScriptWithFallback([
       <span class="chip-x" id="saveViewBtn" style="opacity:1;color:var(--accent);font-size:16px;" title="View options">&#9662;</span>
       <div class="export-menu" id="saveViewMenu" style="left:0;right:auto;">
         <div class="export-item" id="saveViewUpdateBtn">Save view</div>
-        <div class="export-item" id="saveViewNewBtn">Save as new view</div>
+        <div class="export-item" id="saveViewNewTeamBtn">Save as new team view</div>
+        <div class="export-item" id="saveViewNewMyBtn">Save as new personal view</div>
         <div class="export-item" id="saveViewAutosaveBtn">Enable Autosave</div>
         <div class="export-item" id="saveViewRevertBtn">Revert changes</div>
       </div>
     </div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8890ac;font-weight:700;padding:2px 8px;">Team Views</div>
     <div id="savedViewsList"></div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8890ac;font-weight:700;padding:6px 8px 2px;">My Views</div>
+    <div id="myViewsList"></div>
 
     <div class="nav-label">This Device</div>
     <div class="notify-box">
@@ -525,9 +547,21 @@ window.__supabaseLibReady = loadScriptWithFallback([
       </div>
 
       <div id="dtab-automations" style="display:none;">
-        <p class="hint">Automation rules: trigger &rarr; optional conditions &rarr; actions. Rules run automatically for everyone in this space. The two starter rules below replace the old checkboxes &mdash; toggle or edit them like any other rule.</p>
-        <div id="automationRulesList"></div>
-        <button class="btn btn-primary" id="addAutomationRuleBtn" style="margin-top:10px;">+ Add rule</button>
+        <p class="hint">Small rule-based automations that run automatically as your team works. Built-in rules are always available; add custom rules below for anything else.</p>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;">
+          <input type="checkbox" id="auto-subtasks"> Auto-complete a task when every subtask is checked off
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:4px;">
+          <input type="checkbox" id="auto-duesoon"> Notify me 1 day before my tasks are due (needs "This Device" notifications enabled)
+        </label>
+
+        <div class="tm-section" style="margin-top:16px;">
+          <h4>Custom Rules</h4>
+          <p class="hint" style="margin-top:0;">Each rule runs a trigger &rarr; (optional) condition &rarr; action whenever tasks change for everyone in this space.</p>
+          <div id="automationRulesList"></div>
+          <button class="btn btn-ghost" id="addAutomationRuleBtn" style="margin-top:6px;">+ Add rule</button>
+          <div id="automationRuleForm" style="display:none;margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--page);"></div>
+        </div>
       </div>
 
       <div id="dtab-reset" style="display:none;">
@@ -791,36 +825,6 @@ window.__supabaseLibReady = loadScriptWithFallback([
   </div>
 </div>
 
-<div id="automationRuleOverlay">
-  <div id="automationRuleModal">
-    <div class="tm-header">
-      <span style="font-weight:800;font-size:14px;" id="arModalTitle">Automation Rule</span>
-      <button class="btn btn-ghost" id="arModalClose">Close</button>
-    </div>
-    <div class="tm-body">
-      <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">
-        Rule name
-        <input id="arNameInput" style="border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px;text-transform:none;font-weight:400;color:var(--ink);" placeholder="e.g. Escalate high priority Fund II items">
-      </label>
-      <div class="tm-section" style="margin-top:0;padding-top:0;border-top:none;">
-        <h4>When (trigger)</h4>
-        <select class="fselect" id="arTriggerSelect" style="width:100%;"></select>
-      </div>
-      <div class="tm-section">
-        <h4>If (all must match &mdash; optional)</h4>
-        <div id="arConditionsList"></div>
-        <button class="btn btn-ghost" id="arAddConditionBtn" style="margin-top:6px;">+ Add condition</button>
-      </div>
-      <div class="tm-section">
-        <h4>Then (do)</h4>
-        <div id="arActionsList"></div>
-        <button class="btn btn-ghost" id="arAddActionBtn" style="margin-top:6px;">+ Add action</button>
-      </div>
-      <button class="btn btn-accent" id="arSaveBtn" style="margin-top:16px;">Save rule</button>
-    </div>
-  </div>
-</div>
-
 <div id="filtersPanelOverlay">
   <div id="filtersPanel">
     <div class="tm-header">
@@ -867,6 +871,19 @@ window.__supabaseLibReady = loadScriptWithFallback([
       <label class="customize-row"><input type="checkbox" id="cz-empty"> Show empty groups</label>
       <label class="customize-row"><input type="checkbox" id="cz-wrap"> Wrap text in tables</label>
       <label class="customize-row"><input type="checkbox" id="cz-closed"> Show closed tasks (Completed / Cancelled)</label>
+      <div class="customize-row" style="display:block;">
+        <div style="font-weight:700;margin-bottom:6px;">Board: group columns by</div>
+        <select id="cz-board-groupby" class="fselect" style="width:100%;">
+          <option value="none">No grouping (default)</option>
+          <option value="assignee">Assignee (swimlanes)</option>
+          <option value="priority">Priority (swimlanes)</option>
+        </select>
+      </div>
+      <div class="customize-row" style="display:block;border-bottom:none;">
+        <div style="font-weight:700;margin-bottom:6px;">Board: WIP limit per status</div>
+        <div id="cz-wip-limits"></div>
+        <p class="hint" style="margin:4px 0 0;">Leave blank for no limit. The column header turns red when a status has more cards than its limit.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -914,24 +931,6 @@ const DEFAULT_TEAM = ["Jadesola","Emmanuel","Muhammad","Grace","Nicole"];
 const DEFAULT_PROJECTS = ["General"];
 const ROLES = ["owner","admin","approver","member","guest"];
 const ROLE_LABELS = { owner:"Owner", admin:"Admin", approver:"Approver", member:"Member", guest:"Guest" };
-const AUTOMATION_TRIGGERS = [
-  {key:'status_changed', label:'Status changed'},
-  {key:'due_approaching', label:'Due date approaching (1 day before)'},
-  {key:'due_passed', label:'Due date passed (overdue)'},
-  {key:'priority_changed', label:'Priority changed'},
-  {key:'task_created', label:'Task created'}
-];
-const AUTOMATION_CONDITION_FIELDS = [
-  {key:'fund', label:'Fund'},
-  {key:'workstream', label:'Workstream'},
-  {key:'assignee', label:'Assignee'}
-];
-const AUTOMATION_ACTIONS = [
-  {key:'set_status', label:'Change status'},
-  {key:'set_assignee', label:'Change assignee'},
-  {key:'add_comment', label:'Add a comment / system note'},
-  {key:'notify', label:'Notify a person'}
-];
 const TOUR_STEPS = [
   { title:"Welcome to Team Ops Tracker", text:"A quick tour of the basics \u2014 takes about 30 seconds. You can skip anytime and reopen it later from \u201cShow product tour\u201d in the sidebar.", target:null },
   { title:"Add a task", text:"Use \u201c+ Task\u201d to add a task, milestone, or describe one in plain English and let AI fill in the details.", target:"#quickAddBtn" },
@@ -959,6 +958,25 @@ const FIELD_OPTIONS = [
   {key:"dueDate", label:"Due Date"},
   {key:"status", label:"Status"},
   {key:"notes", label:"Notes"}
+];
+
+const AUTOMATION_TRIGGERS = [
+  {key:"status_changed", label:"Status changed"},
+  {key:"priority_changed", label:"Priority changed"},
+  {key:"due_date_approaching", label:"Due date approaching"},
+  {key:"due_date_passed", label:"Due date passed (task becomes overdue)"},
+  {key:"task_created", label:"Task created"}
+];
+const AUTOMATION_CONDITION_FIELDS = [
+  {key:"fund", label:"Fund"},
+  {key:"workstream", label:"Workstream"},
+  {key:"assignee", label:"Assignee"}
+];
+const AUTOMATION_ACTIONS = [
+  {key:"change_status", label:"Change status"},
+  {key:"change_assignee", label:"Change assignee"},
+  {key:"add_comment", label:"Add a comment / system note"},
+  {key:"notify_person", label:"Notify a person"}
 ];
 
 const SEED_TASKS = [
@@ -995,12 +1013,15 @@ let filterProject = '';
 let selectedIds = new Set();
 let openTaskId = null;
 let savedViews = [];
-let automationRules = [];
+let myViews = [];
+let activeViewScope = null; /* 'team' | 'personal' | null */
+let automationSettings = { autoCompleteSubtasks: true, notifyDueSoon: false, rules: [] };
+let editingRuleId = null;
+let notifiedDuePassedIds = new Set();
+let automationRunDepth = 0;
 let notifiedDueSoonIds = new Set();
-let firedDueAutomations = new Set();
-let arEditingId = null, arConditions = [], arActions = [];
 let advFilters = { statuses: new Set(), priorities: new Set(), assignees: new Set(), tags: new Set(), dueFrom: '', dueTo: '', overdueOnly: false, unscheduledOnly: false };
-let customizeSettings = { showEmptyGroups: true, wrapText: false, showClosed: true };
+let customizeSettings = { showEmptyGroups: true, wrapText: false, showClosed: true, boardGroupBy: 'none', wipLimits: {} };
 let chatMessages = [];
 let timelinePeriod = 'quarter';
 let timelineAnchor = new Date();
@@ -1067,6 +1088,46 @@ function dateToISO(d){
   var mm=(d.getMonth()+1+'').padStart(2,'0'), dd=(d.getDate()+'').padStart(2,'0');
   return d.getFullYear()+'-'+mm+'-'+dd;
 }
+
+/* ---------------- Multi-step approval chain helpers ----------------
+   t.approvalChain: [{name, status:'Pending'|'Approved'|'Rejected'}]
+   t.approvalStatus is kept in sync (null/'Pending'/'Approved'/'Rejected') for
+   backward-compatible display code (list pills, CSV export, etc). */
+function freshApprovalChain(names){
+  return (names||[]).filter(function(n){ return n; }).map(function(n){ return { name:n, status:'Pending' }; });
+}
+function migrateTaskApprovals(t){
+  if(!t.approvalChain){
+    t.approvalChain = t.supervisor ? freshApprovalChain([t.supervisor]) : [];
+    if(t.approvalChain.length){
+      if(t.approvalStatus==='Approved') t.approvalChain[0].status='Approved';
+      else if(t.approvalStatus==='Rejected') t.approvalChain[0].status='Rejected';
+    }
+  }
+  syncApprovalStatus(t);
+}
+function syncApprovalStatus(t){
+  t.approvalChain = t.approvalChain || [];
+  if(!t.approvalChain.length){ t.approvalStatus = null; return t.approvalStatus; }
+  if(t.approvalChain.some(function(a){ return a.status==='Rejected'; })){ t.approvalStatus='Rejected'; return t.approvalStatus; }
+  if(t.approvalChain.every(function(a){ return a.status==='Approved'; })){ t.approvalStatus='Approved'; return t.approvalStatus; }
+  t.approvalStatus = 'Pending';
+  return t.approvalStatus;
+}
+function currentApprovalStepIndex(t){
+  if(!t.approvalChain) return -1;
+  for(var i=0;i<t.approvalChain.length;i++){ if(t.approvalChain[i].status==='Pending') return i; }
+  return -1;
+}
+function approvalChainSummary(t){
+  var chain = t.approvalChain || [];
+  if(!chain.length) return '\u2014';
+  if(chain.length===1) return chain[0].name;
+  var stepIdx = currentApprovalStepIndex(t);
+  var suffix = stepIdx>=0 ? ' ('+(stepIdx+1)+'/'+chain.length+')' : (syncApprovalStatus(t)==='Rejected' ? ' (rejected)' : ' (done)');
+  return chain.map(function(a){return a.name;}).join(' \u2192 ') + suffix;
+}
+
 function maybeSpawnRecurrence(t){
   if(!t.recurrence || t.recurrence==='none') return;
   var base = parseDate(t.dueDate) || new Date();
@@ -1081,14 +1142,97 @@ function maybeSpawnRecurrence(t){
     collaborator: t.collaborator, supervisor: t.supervisor, dueDate: dateToISO(nd),
     status: 'Not Started', notes: t.notes, createdAt: Date.now(), completedAt: null,
     subtasks: (t.subtasks||[]).map(function(s){ return { id: uid(), text: s.text, done: false }; }),
-    comments: [], attachments: [], approvalStatus: null, approvalNote: '',
-    approvalChain: [], approvals: [], approvalStep: 0, tags: (t.tags||[]).slice(),
-    blockedBy: [], recurrence: t.recurrence, isMilestone: t.isMilestone, order: (tasks.length+1)*10
+    comments: [], attachments: [],
+    approvalChain: freshApprovalChain((t.approvalChain||[]).map(function(a){ return a.name; })),
+    approvalStatus: null, approvalNote: '',
+    blockedBy: [], recurrence: t.recurrence, isMilestone: t.isMilestone, order: (tasks.length+1)*10, tags: (t.tags||[]).slice()
   };
+  syncApprovalStatus(clone);
   tasks.push(clone);
-  normalizeApprovals(clone);
-  fireAutomations('task_created', clone);
+  runAutomationsForTrigger('task_created', clone);
   logActivity('Recurring task recreated: "'+clone.deliverable+'" (next due '+fmtDate(clone.dueDate)+')');
+}
+
+/* ---------------- Automation rule engine ----------------
+   automationSettings.rules: [{id, enabled, name, trigger:{type, toStatus?, days?},
+     conditions:[{field:'fund'|'workstream'|'assignee', value}], actions:[{type, value}]}] */
+function automationConditionsMatch(rule, t){
+  return (rule.conditions||[]).every(function(c){
+    if(!c.value) return true;
+    if(c.field==='fund') return t.fund===c.value;
+    if(c.field==='workstream') return t.workstream===c.value;
+    if(c.field==='assignee') return t.assignee===c.value;
+    return true;
+  });
+}
+function runAutomationActions(rule, t){
+  (rule.actions||[]).forEach(function(a){
+    if(a.type==='change_status' && a.value){
+      var oldS = t.status;
+      if(oldS===a.value) return;
+      t.status = a.value;
+      t.completedAt = a.value==='Completed' ? Date.now() : null;
+      logActivity('Automation \u201c'+rule.name+'\u201d changed <b>'+t.deliverable+'</b> from '+oldS+' to '+a.value);
+      if(a.value==='Completed') maybeSpawnRecurrence(t);
+      runAutomationsForTrigger('status_changed', t);
+    } else if(a.type==='change_assignee' && a.value){
+      var oldA = t.assignee;
+      if(oldA===a.value) return;
+      t.assignee = a.value;
+      logActivity('Automation \u201c'+rule.name+'\u201d reassigned <b>'+t.deliverable+'</b> from '+oldA+' to '+a.value);
+    } else if(a.type==='add_comment'){
+      t.comments = t.comments || [];
+      t.comments.push({ id: uid(), author: 'Automation: '+rule.name, text: a.value || 'Rule triggered.', ts: Date.now() });
+      logActivity('Automation \u201c'+rule.name+'\u201d commented on <b>'+t.deliverable+'</b>');
+    } else if(a.type==='notify_person' && a.value){
+      logActivity('Automation \u201c'+rule.name+'\u201d notified <b>'+a.value+'</b> about "'+t.deliverable+'"');
+      if(notifyAsName===a.value && typeof Notification!=='undefined' && Notification.permission==='granted'){
+        try{ new Notification('Automation: '+rule.name, { body: t.deliverable }); }catch(e){}
+      }
+    }
+  });
+}
+function runAutomationsForTrigger(triggerType, t, opts){
+  if(!t || automationRunDepth > 4) return;
+  var rules = (automationSettings.rules||[]).filter(function(r){ return r.enabled && r.trigger && r.trigger.type===triggerType; });
+  if(!rules.length) return;
+  automationRunDepth++;
+  try{
+    rules.forEach(function(r){
+      if(triggerType==='status_changed' && r.trigger.toStatus && r.trigger.toStatus!==t.status) return;
+      if(!automationConditionsMatch(r, t)) return;
+      runAutomationActions(r, t);
+    });
+    saveTasks();
+  } finally { automationRunDepth--; }
+}
+function checkDueDateAutomations(){
+  var rules = (automationSettings.rules||[]).filter(function(r){ return r.enabled && r.trigger && (r.trigger.type==='due_date_approaching' || r.trigger.type==='due_date_passed'); });
+  if(!rules.length) return;
+  var changed = false;
+  tasks.forEach(function(t){
+    if(t.status==='Completed' || t.status==='Cancelled') return;
+    var d = parseDate(t.dueDate);
+    if(!d) return;
+    rules.forEach(function(r){
+      var key = r.id+':'+t.id;
+      if(r.trigger.type==='due_date_passed'){
+        if(isOverdue(t) && !notifiedDuePassedIds.has(key)){
+          if(automationConditionsMatch(r, t)){ runAutomationActions(r, t); changed = true; }
+          notifiedDuePassedIds.add(key);
+        }
+      } else {
+        var days = r.trigger.days!=null ? r.trigger.days : 1;
+        var today = new Date(); today.setHours(0,0,0,0);
+        var target = new Date(today); target.setDate(target.getDate()+days);
+        if(d.getFullYear()===target.getFullYear() && d.getMonth()===target.getMonth() && d.getDate()===target.getDate() && !notifiedDuePassedIds.has(key)){
+          if(automationConditionsMatch(r, t)){ runAutomationActions(r, t); changed = true; }
+          notifiedDuePassedIds.add(key);
+        }
+      }
+    });
+  });
+  if(changed) saveTasks();
 }
 
 /* =====================================================================
@@ -1308,11 +1452,11 @@ function enterApp(){
 function renderUserBadge(){
   var el = document.getElementById('userBadge');
   if(!el || !currentProfile) return;
-  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:8px;min-width:0;">'+
-    '<span class="avatar" style="background:'+(isAdmin()?'var(--accent)':'#3A4266')+';color:'+(isAdmin()?'#241c00':'#fff')+';flex:0 0 26px;">'+(currentProfile.display_name||'?').slice(0,2).toUpperCase()+'</span>'+
-    '<div style="flex:1;min-width:0;overflow:hidden;"><div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+(currentProfile.display_name||'')+'">'+(currentProfile.display_name||'Unnamed')+'</div>'+
-    '<div style="font-size:10px;color:#8890ac;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+(currentProfile.role||'')+'">'+(currentProfile.role||'member')+'</div></div>'+
-    '<button class="btn btn-ghost" id="signOutBtn" style="padding:4px 8px;font-size:11px;flex:0 0 auto;">Sign out</button>'+
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:8px;">'+
+    '<span class="avatar" style="background:'+(isAdmin()?'var(--accent)':'#3A4266')+';color:'+(isAdmin()?'#241c00':'#fff')+';">'+(currentProfile.display_name||'?').slice(0,2).toUpperCase()+'</span>'+
+    '<div style="flex:1;overflow:hidden;"><div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+currentProfile.display_name+'</div>'+
+    '<div style="font-size:10px;color:#8890ac;text-transform:capitalize;">'+currentProfile.role+'</div></div>'+
+    '<button class="btn btn-ghost" id="signOutBtn" style="padding:4px 8px;font-size:11px;">Sign out</button>'+
     '</div>';
   document.getElementById('signOutBtn').addEventListener('click', async function(){
     await supabaseClient.auth.signOut();
@@ -1515,11 +1659,7 @@ async function saveLastSeen(){ await Backend.set('lastSeen', lastSeen, true); }
 async function saveActivity(){ await Backend.set('activity', activity, true); }
 async function saveProjects(){ await Backend.set('projects', projects, true); }
 async function saveSavedViews(){ await Backend.set('savedViews', savedViews, true); }
-async function saveAutomationRules(){ await Backend.set('automationRules', automationRules, true); }
-function isBuiltinRuleEnabled(id){
-  var r = automationRules.find(function(x){ return x.id===id; });
-  return r ? !!r.enabled : false;
-}
+async function saveAutomationSettings(){ await Backend.set('automationSettings', automationSettings, true); }
 async function saveCustomizeSettings(){ savePersonal('customizeSettings', customizeSettings); }
 async function saveChatMessages(){ await Backend.set('chatMessages', chatMessages, true); }
 function logActivity(text){
@@ -1542,77 +1682,16 @@ function unreadCountFor(person){
   return tasks.filter(function(t){ return t.assignee===person && (t.createdAt||0) > seen; }).length;
 }
 
-/* ---------------- Automation engine ---------------- */
-function automationConditionsMatch(t, conditions){
-  return (conditions||[]).every(function(c){
-    if(c.field==='fund') return t.fund === c.value;
-    if(c.field==='workstream') return t.workstream === c.value;
-    if(c.field==='assignee') return t.assignee === c.value;
-    return true;
-  });
+function searchMatchField(t, term){
+  if(!term) return null;
+  var lc = term.toLowerCase();
+  if(((t.deliverable||'')+' '+(t.segment||'')+' '+(t.workstream||'')).toLowerCase().indexOf(lc)>=0) return 'title';
+  var cm = (t.comments||[]).find(function(c){ return (c.text||'').toLowerCase().indexOf(lc)>=0; });
+  if(cm) return 'comment';
+  var at = (t.attachments||[]).find(function(a){ return (a.name||'').toLowerCase().indexOf(lc)>=0; });
+  if(at) return 'attachment';
+  return null;
 }
-function runAutomationActions(rule, t){
-  (rule.actions||[]).forEach(function(a){
-    if(a.type==='set_status' && a.value){
-      var old = t.status;
-      if(old===a.value) return;
-      t.status = a.value;
-      t.completedAt = a.value==='Completed' ? Date.now() : null;
-      logActivity('Automation <b>'+rule.name+'</b>: "'+t.deliverable+'" status set to '+a.value+' (was '+old+')');
-      if(a.value==='Completed') maybeSpawnRecurrence(t);
-    } else if(a.type==='set_assignee' && a.value){
-      var oldA = t.assignee;
-      t.assignee = a.value;
-      logActivity('Automation <b>'+rule.name+'</b>: "'+t.deliverable+'" reassigned from '+oldA+' to '+a.value);
-    } else if(a.type==='add_comment'){
-      t.comments = t.comments || [];
-      t.comments.push({ id: uid(), author: 'Automation: '+rule.name, text: a.value || ('Rule "'+rule.name+'" triggered'), ts: Date.now() });
-    } else if(a.type==='notify'){
-      var person = a.value==='assignee' ? t.assignee : a.value;
-      logActivity('Automation <b>'+rule.name+'</b>: notified <b>'+(person||'someone')+'</b> about "'+t.deliverable+'"');
-      /* Reuse the same live-notification plumbing the due-soon rule uses:
-         if the person being notified is this device's "Notify me as" user
-         and the browser has granted permission, pop a real notification. */
-      if(person && person===notifyAsName && typeof Notification !== 'undefined' && Notification.permission==='granted'){
-        try{ new Notification('Automation: '+rule.name, { body: '"'+t.deliverable+'" \u2014 '+person+' was notified' }); }catch(e){}
-      }
-    }
-  });
-}
-/* Custom (non-builtin) rules only run through this generic engine. The two
-   built-in rules (auto-complete-on-subtasks, due-soon notify) keep their
-   original bespoke code paths, gated by isBuiltinRuleEnabled(), so the two
-   mechanisms never double-fire for the same event. */
-function fireAutomations(triggerType, t){
-  if(!t) return;
-  automationRules.filter(function(r){
-    return !r.builtin && r.enabled && r.trigger && r.trigger.type===triggerType;
-  }).forEach(function(r){
-    if(!automationConditionsMatch(t, r.conditions)) return;
-    runAutomationActions(r, t);
-  });
-}
-function checkDueDateAutomations(){
-  var today = new Date(); today.setHours(0,0,0,0);
-  var tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
-  var changed = false;
-  tasks.forEach(function(t){
-    if(t.status==='Completed'||t.status==='Cancelled') return;
-    var d = parseDate(t.dueDate);
-    if(!d) return;
-    var dd = new Date(d); dd.setHours(0,0,0,0);
-    if(dd.getTime()===tomorrow.getTime()){
-      var k1 = 'approach:'+t.id;
-      if(!firedDueAutomations.has(k1)){ firedDueAutomations.add(k1); fireAutomations('due_approaching', t); changed = true; }
-    }
-    if(dd.getTime()<today.getTime()){
-      var k2 = 'passed:'+t.id;
-      if(!firedDueAutomations.has(k2)){ firedDueAutomations.add(k2); fireAutomations('due_passed', t); changed = true; }
-    }
-  });
-  if(changed){ saveTasks(); renderAll(); }
-}
-
 function filteredTasks(){
   return tasks.filter(function(t){
     if(filterAssignee && t.assignee !== filterAssignee) return false;
@@ -1631,10 +1710,7 @@ function filteredTasks(){
     }
     if(advFilters.overdueOnly && !isOverdue(t)) return false;
     if(advFilters.unscheduledOnly && parseDate(t.dueDate)) return false;
-    if(searchTerm){
-      var hay = ((t.deliverable||'')+' '+(t.segment||'')+' '+(t.workstream||'')).toLowerCase();
-      if(hay.indexOf(searchTerm.toLowerCase())===-1) return false;
-    }
+    if(searchTerm && !searchMatchField(t, searchTerm)) return false;
     return true;
   });
 }
@@ -1746,15 +1822,13 @@ function addTaskWithStatus(status, assignee, deliverable){
     deliverable: deliverable || 'Untitled deliverable', priority: 'Medium', type: 'Owner',
     collaborator: '', supervisor: '', dueDate: '', status: status, notes: '', createdAt: Date.now(),
     completedAt: status==='Completed' ? Date.now() : null,
-    subtasks: [], comments: [], attachments: [], approvalStatus: null, approvalNote: '',
-    approvalChain: [], approvals: [], approvalStep: 0,
+    subtasks: [], comments: [], attachments: [], approvalChain: [], approvalStatus: null, approvalNote: '',
     blockedBy: [], recurrence: 'none', isMilestone: false, order: (tasks.length+1)*10, tags: []
   };
   tasks.push(t);
-  normalizeApprovals(t);
-  fireAutomations('task_created', t);
   saveTasks();
   logActivity('<b>'+(assignee||'Someone')+'</b> added "'+t.deliverable+'" ('+status+')');
+  runAutomationsForTrigger('task_created', t);
   return t;
 }
 
@@ -1846,7 +1920,7 @@ function renderList(){
           body += '<tr data-id="'+t.id+'" data-status="'+status+'">'+
             '<td class="drag-handle" draggable="true" data-id="'+t.id+'" title="Drag to reorder">&#8942;&#8942;</td>'+
             '<td><input type="checkbox" class="row-check" data-id="'+t.id+'"'+(selectedIds.has(t.id)?' checked':'')+'></td>'+
-            '<td class="name-cell clickable" data-id="'+t.id+'">'+(t.isMilestone?'\u25c6 ':'')+t.deliverable+(t.subtasks&&t.subtasks.length?' <span class="n">('+t.subtasks.filter(function(s){return s.done;}).length+'/'+t.subtasks.length+')</span>':'')+(t.approvalStatus==='Rejected'?' <span class="status-pill" style="background:var(--cancelled);">Rejected</span>':'')+(isBlocked(t)?' <span class="status-pill" style="background:#64748B;">Blocked</span>':'')+((t.tags&&t.tags.length)?t.tags.map(function(tag){return ' <span class="tag-chip" style="margin:0;">'+tag+'</span>';}).join(''):'')+'</td>'+
+            '<td class="name-cell clickable" data-id="'+t.id+'">'+(t.isMilestone?'\u25c6 ':'')+t.deliverable+(t.subtasks&&t.subtasks.length?' <span class="n">('+t.subtasks.filter(function(s){return s.done;}).length+'/'+t.subtasks.length+')</span>':'')+(t.approvalStatus==='Pending'?' <span class="status-pill" style="background:#B45309;">Pending Approval</span>':'')+(t.approvalStatus==='Rejected'?' <span class="status-pill" style="background:var(--cancelled);">Rejected</span>':'')+(isBlocked(t)?' <span class="status-pill" style="background:#64748B;">Blocked</span>':'')+((t.tags&&t.tags.length)?t.tags.map(function(tag){return ' <span class="tag-chip" style="margin:0;">'+tag+'</span>';}).join(''):'')+(searchTerm && searchMatchField(t,searchTerm)!=='title' ? ' <span class="status-pill" style="background:var(--accent);color:#241c00;">matched in '+searchMatchField(t,searchTerm)+'</span>' : '')+'</td>'+
             '<td><div class="assignee-cell">'+avatarHtml(t.assignee)+'<select class="chip-select assignee-select" data-id="'+t.id+'">'+
               team.map(function(p){ return '<option value="'+p+'"'+(p===t.assignee?' selected':'')+'>'+p+'</option>'; }).join('') +
             '</select></div></td>'+
@@ -1864,11 +1938,7 @@ function renderList(){
               peopleOptions().map(function(p){ return '<option value="'+p+'"'+(p===t.collaborator?' selected':'')+'>'+p+'</option>'; }).join('') +
               (t.collaborator && peopleOptions().indexOf(t.collaborator)===-1 ? '<option value="'+t.collaborator+'" selected>'+t.collaborator+'</option>' : '') +
             '</select></td>'+
-            '<td><select class="chip-select superv-select" data-id="'+t.id+'">'+
-              '<option value=""'+(!t.supervisor?' selected':'')+'>\u2014</option>'+
-              peopleOptions().map(function(p){ return '<option value="'+p+'"'+(p===t.supervisor?' selected':'')+'>'+p+'</option>'; }).join('') +
-              (t.supervisor && peopleOptions().indexOf(t.supervisor)===-1 ? '<option value="'+t.supervisor+'" selected>'+t.supervisor+'</option>' : '') +
-            '</select></td>'+
+            '<td><span class="name-cell clickable approval-summary" data-id="'+t.id+'" style="font-weight:600;font-size:11.5px;">'+approvalChainSummary(t)+'</span></td>'+
             '<td><input type="date" class="cell-date start-date" data-id="'+t.id+'" value="'+toISODate(t.date)+'"></td>'+
             '<td><input type="date" class="cell-date due-date'+(isOverdue(t)?' overdue-input':'')+'" data-id="'+t.id+'" value="'+toISODate(t.dueDate)+'"></td>'+
             '<td><select class="status-select st-select" style="background:'+STATUS_COLOR[t.status]+'" data-id="'+t.id+'">'+STATUS.map(function(s){return '<option value="'+s+'"'+(s===t.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></td>'+
@@ -1970,11 +2040,11 @@ function bindListEvents(){
           if(field==='status'){
             t.completedAt = s.value==='Completed' ? Date.now() : null;
             logActivity('<b>'+t.assignee+'</b> moved "'+t.deliverable+'" from '+oldVal+' to '+s.value);
-            fireAutomations('status_changed', t);
             if(s.value==='Completed') maybeSpawnRecurrence(t);
+            runAutomationsForTrigger('status_changed', t);
+          } else if(field==='priority'){
+            runAutomationsForTrigger('priority_changed', t);
           }
-          if(field==='priority') fireAutomations('priority_changed', t);
-          if(field==='supervisor'){ t.approvalChain = [s.value].concat((t.approvalChain||[]).slice(1)).filter(Boolean); t.approvals=[]; normalizeApprovals(t); }
           saveTasks(); renderAll();
         }
       });
@@ -1995,7 +2065,6 @@ function bindListEvents(){
   bindSelect('.type-sel','type');
   bindSelect('.st-select','status');
   bindSelect('.collab-select','collaborator');
-  bindSelect('.superv-select','supervisor');
   bindSelect('.segment-select','segment');
   bindInput('.notes-input','notes');
   bindInput('.start-date','date');
@@ -2025,7 +2094,7 @@ function renderBulkBar(){
 }
 document.getElementById('bulkStatusSelect').addEventListener('change', function(){
   var val = this.value; if(!val) return;
-  tasks.forEach(function(t){ if(selectedIds.has(t.id)){ t.status = val; t.completedAt = val==='Completed' ? Date.now() : null; fireAutomations('status_changed', t); if(val==='Completed') maybeSpawnRecurrence(t); } });
+  tasks.forEach(function(t){ if(selectedIds.has(t.id)){ t.status = val; t.completedAt = val==='Completed' ? Date.now() : null; if(val==='Completed') maybeSpawnRecurrence(t); runAutomationsForTrigger('status_changed', t); } });
   logActivity('Bulk: '+selectedIds.size+' task(s) set to '+val);
   saveTasks(); this.value=''; renderAll();
 }.bind(document.getElementById('bulkStatusSelect')));
@@ -2104,149 +2173,236 @@ document.getElementById('addProjectBtn').addEventListener('click', function(){
 });
 document.getElementById('projectFilter').addEventListener('change', function(ev){ filterProject = ev.target.value; renderAll(); });
 
-/* ---------------- Automations (rule builder) ---------------- */
-function ruleSummaryText(r){
-  var trig = AUTOMATION_TRIGGERS.find(function(x){ return x.key===r.trigger.type; });
-  var trigLabel = trig ? trig.label : r.trigger.type;
-  var condText = (r.conditions && r.conditions.length) ? ' if ' + r.conditions.map(function(c){
-    var f = AUTOMATION_CONDITION_FIELDS.find(function(x){ return x.key===c.field; });
-    return (f?f.label:c.field)+' = '+c.value;
-  }).join(' and ') : '';
-  var actText = (r.actions && r.actions.length) ? r.actions.map(function(a){
-    var act = AUTOMATION_ACTIONS.find(function(x){ return x.key===a.type; });
-    var lbl = act ? act.label : a.type;
-    return lbl + (a.value ? ' \u2192 '+a.value : '');
-  }).join('; ') : 'no actions';
-  return 'When '+trigLabel+condText+', then '+actText+'.';
+/* ---------------- Automations ---------------- */
+document.getElementById('auto-subtasks').addEventListener('change', function(){
+  automationSettings.autoCompleteSubtasks = this.checked; saveAutomationSettings();
+});
+document.getElementById('auto-duesoon').addEventListener('change', function(){
+  automationSettings.notifyDueSoon = this.checked; saveAutomationSettings();
+});
+function syncAutomationCheckboxes(){
+  document.getElementById('auto-subtasks').checked = !!automationSettings.autoCompleteSubtasks;
+  document.getElementById('auto-duesoon').checked = !!automationSettings.notifyDueSoon;
 }
-function renderAutomationRulesList(){
+
+/* ---------------- Custom automation rule builder ---------------- */
+let ruleFormDraft = null;
+function emptyRuleDraft(){
+  return { id: uid(), enabled: true, name: '', trigger: { type: 'status_changed', toStatus: '', days: 1 }, conditions: [], actions: [ { type: 'change_status', value: STATUS[0] } ] };
+}
+function describeTrigger(trigger){
+  if(trigger.type==='status_changed') return 'Status changes'+(trigger.toStatus?' to \u201c'+trigger.toStatus+'\u201d':'');
+  if(trigger.type==='priority_changed') return 'Priority changes';
+  if(trigger.type==='due_date_approaching') return 'Due date is '+(trigger.days!=null?trigger.days:1)+' day(s) away';
+  if(trigger.type==='due_date_passed') return 'Due date passes (task becomes overdue)';
+  if(trigger.type==='task_created') return 'A task is created';
+  return trigger.type;
+}
+function describeConditions(conditions){
+  if(!conditions || !conditions.length) return '';
+  return ' when '+conditions.map(function(c){
+    var label = (AUTOMATION_CONDITION_FIELDS.find(function(f){ return f.key===c.field; })||{}).label || c.field;
+    return label+' = \u201c'+c.value+'\u201d';
+  }).join(' and ');
+}
+function describeActions(actions){
+  if(!actions || !actions.length) return 'do nothing';
+  return actions.map(function(a){
+    if(a.type==='change_status') return 'set status to \u201c'+a.value+'\u201d';
+    if(a.type==='change_assignee') return 'reassign to '+a.value;
+    if(a.type==='add_comment') return 'add a comment ("'+(a.value||'').slice(0,40)+((a.value||'').length>40?'\u2026':'')+'")';
+    if(a.type==='notify_person') return 'notify '+a.value;
+    return a.type;
+  }).join('; ');
+}
+function describeRule(rule){
+  return describeTrigger(rule.trigger)+describeConditions(rule.conditions)+' \u2192 '+describeActions(rule.actions)+'.';
+}
+function ruleActionValueOptions(actionType){
+  if(actionType==='change_status') return STATUS;
+  if(actionType==='change_assignee') return team;
+  if(actionType==='notify_person') return team;
+  return null;
+}
+function ruleConditionValueOptions(field){
+  if(field==='fund') return FUNDS;
+  if(field==='workstream') return WORKSTREAMS;
+  if(field==='assignee') return team;
+  return [];
+}
+
+function renderAutomationRules(){
   var el = document.getElementById('automationRulesList');
   if(!el) return;
-  if(!automationRules.length){ el.innerHTML = '<div class="empty">No rules yet.</div>'; return; }
-  el.innerHTML = automationRules.map(function(r){
-    return '<div class="role-row" style="align-items:flex-start;">'+
-      '<div style="flex:1;">'+
-        '<div style="font-weight:700;">'+r.name+(r.builtin?' <span class="n" style="font-weight:400;">(built-in)</span>':'')+'</div>'+
-        '<div class="hint" style="margin:2px 0 0;">'+ruleSummaryText(r)+'</div>'+
-      '</div>'+
-      '<label style="display:flex;align-items:center;gap:4px;white-space:nowrap;font-size:12px;"><input type="checkbox" class="ar-toggle" data-id="'+r.id+'"'+(r.enabled?' checked':'')+'> On</label>'+
-      (!r.builtin ? '<button class="btn btn-ghost ar-edit" data-id="'+r.id+'">Edit</button><button class="btn btn-ghost ar-del" data-id="'+r.id+'">Delete</button>' : '')+
-      '</div>';
-  }).join('');
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-toggle'), function(cb){
-    cb.addEventListener('change', function(){
-      var r = automationRules.find(function(x){ return x.id===cb.getAttribute('data-id'); });
-      if(r){ r.enabled = cb.checked; saveAutomationRules(); logActivity('Automation rule <b>'+r.name+'</b> turned '+(r.enabled?'on':'off')); }
-    });
-  });
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-edit'), function(b){
-    b.addEventListener('click', function(){ openAutomationRuleEditor(b.getAttribute('data-id')); });
-  });
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-del'), function(b){
-    b.addEventListener('click', function(){
-      if(!confirm('Delete this rule?')) return;
-      automationRules = automationRules.filter(function(x){ return x.id!==b.getAttribute('data-id'); });
-      saveAutomationRules(); renderAutomationRulesList();
-    });
-  });
-}
-document.getElementById('addAutomationRuleBtn').addEventListener('click', function(){ openAutomationRuleEditor(null); });
-
-function openAutomationRuleEditor(id){
-  arEditingId = id;
-  var r = id ? automationRules.find(function(x){ return x.id===id; }) : null;
-  document.getElementById('arModalTitle').textContent = r ? 'Edit rule' : 'New rule';
-  document.getElementById('arNameInput').value = r ? r.name : '';
-  document.getElementById('arTriggerSelect').innerHTML = AUTOMATION_TRIGGERS.map(function(tr){
-    return '<option value="'+tr.key+'"'+(r && r.trigger.type===tr.key ? ' selected' : '')+'>'+tr.label+'</option>';
-  }).join('');
-  arConditions = r ? JSON.parse(JSON.stringify(r.conditions||[])) : [];
-  arActions = r ? JSON.parse(JSON.stringify(r.actions||[])) : [{type:'set_status', value: STATUS[0]}];
-  renderArConditions(); renderArActions();
-  document.getElementById('automationRuleOverlay').classList.add('open');
-}
-function renderArConditions(){
-  var el = document.getElementById('arConditionsList');
-  el.innerHTML = arConditions.length ? arConditions.map(function(c,i){
-    var f = AUTOMATION_CONDITION_FIELDS.find(function(x){ return x.key===c.field; }) || AUTOMATION_CONDITION_FIELDS[0];
-    var valueOptions = f.key==='assignee' ? team : f.key==='fund' ? FUNDS : WORKSTREAMS;
-    return '<div class="ar-row">'+
-      '<select class="ar-cond-field" data-i="'+i+'">'+AUTOMATION_CONDITION_FIELDS.map(function(x){ return '<option value="'+x.key+'"'+(x.key===c.field?' selected':'')+'>'+x.label+'</option>'; }).join('')+'</select>'+
-      '<span>=</span>'+
-      '<select class="ar-cond-value" data-i="'+i+'">'+valueOptions.map(function(v){ return '<option value="'+v+'"'+(v===c.value?' selected':'')+'>'+v+'</option>'; }).join('')+'</select>'+
-      '<span class="ar-remove" data-i="'+i+'">&times;</span>'+
-      '</div>';
-  }).join('') : '<div class="hint">No conditions \u2014 rule matches every task.</div>';
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-cond-field'), function(s){
-    s.addEventListener('change', function(){ var i=+s.getAttribute('data-i'); arConditions[i].field = s.value; arConditions[i].value=''; renderArConditions(); });
-  });
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-cond-value'), function(s){
-    s.addEventListener('change', function(){ var i=+s.getAttribute('data-i'); arConditions[i].value = s.value; });
-  });
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-remove'), function(x){
-    x.addEventListener('click', function(){ arConditions.splice(+x.getAttribute('data-i'),1); renderArConditions(); });
-  });
-}
-document.getElementById('arAddConditionBtn').addEventListener('click', function(){
-  arConditions.push({ field:'fund', value: FUNDS[0] }); renderArConditions();
-});
-function renderArActions(){
-  var el = document.getElementById('arActionsList');
-  el.innerHTML = arActions.map(function(a,i){
-    var valueField = '';
-    if(a.type==='set_status') valueField = '<select class="ar-act-value" data-i="'+i+'">'+STATUS.map(function(s){ return '<option value="'+s+'"'+(s===a.value?' selected':'')+'>'+s+'</option>'; }).join('')+'</select>';
-    else if(a.type==='set_assignee') valueField = '<select class="ar-act-value" data-i="'+i+'">'+team.map(function(p){ return '<option value="'+p+'"'+(p===a.value?' selected':'')+'>'+p+'</option>'; }).join('')+'</select>';
-    else if(a.type==='notify') valueField = '<select class="ar-act-value" data-i="'+i+'"><option value="assignee"'+(a.value==='assignee'?' selected':'')+'>Task assignee</option>'+team.map(function(p){ return '<option value="'+p+'"'+(p===a.value?' selected':'')+'>'+p+'</option>'; }).join('')+'</select>';
-    else valueField = '<input class="ar-act-value" data-i="'+i+'" placeholder="Comment text" value="'+(a.value||'').replace(/"/g,'&quot;')+'">';
-    return '<div class="ar-row">'+
-      '<select class="ar-act-type" data-i="'+i+'">'+AUTOMATION_ACTIONS.map(function(x){ return '<option value="'+x.key+'"'+(x.key===a.type?' selected':'')+'>'+x.label+'</option>'; }).join('')+'</select>'+
-      valueField+
-      '<span class="ar-remove" data-i="'+i+'">&times;</span>'+
-      '</div>';
-  }).join('');
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-act-type'), function(s){
-    s.addEventListener('change', function(){ var i=+s.getAttribute('data-i'); arActions[i].type = s.value; arActions[i].value=''; renderArActions(); });
-  });
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-act-value'), function(inp){
-    inp.addEventListener('change', function(){ var i=+inp.getAttribute('data-i'); arActions[i].value = inp.value; });
-  });
-  Array.prototype.forEach.call(el.querySelectorAll('.ar-remove'), function(x){
-    x.addEventListener('click', function(){ arActions.splice(+x.getAttribute('data-i'),1); renderArActions(); });
-  });
-}
-document.getElementById('arAddActionBtn').addEventListener('click', function(){
-  arActions.push({ type:'set_status', value: STATUS[0] }); renderArActions();
-});
-document.getElementById('arSaveBtn').addEventListener('click', function(){
-  var name = document.getElementById('arNameInput').value.trim();
-  if(!name){ alert('Give the rule a name.'); return; }
-  if(!arActions.length){ alert('Add at least one action.'); return; }
-  var triggerType = document.getElementById('arTriggerSelect').value;
-  var rule = {
-    id: arEditingId || uid(),
-    name: name, enabled: true,
-    trigger: { type: triggerType },
-    conditions: arConditions.filter(function(c){ return c.value; }),
-    actions: arActions
-  };
-  if(arEditingId){
-    var idx = automationRules.findIndex(function(x){ return x.id===arEditingId; });
-    if(idx>=0){ rule.enabled = automationRules[idx].enabled; automationRules[idx] = rule; }
-    logActivity('Automation rule <b>'+name+'</b> was updated');
+  var rules = automationSettings.rules || [];
+  if(!rules.length){
+    el.innerHTML = '<div class="empty">No custom rules yet \u2014 add one below.</div>';
   } else {
-    automationRules.push(rule);
-    logActivity('Automation rule <b>'+name+'</b> was created');
+    el.innerHTML = rules.map(function(r){
+      return '<div class="rule-card">'+
+        '<div class="rule-card-head">'+
+          '<input type="checkbox" class="rule-enable-cb" data-id="'+r.id+'"'+(r.enabled?' checked':'')+' title="Enable/disable this rule">'+
+          '<span class="rc-name">'+(r.name||'Untitled rule')+'</span>'+
+        '</div>'+
+        '<div class="rule-card-desc">'+describeRule(r)+'</div>'+
+        '<div class="rule-card-actions">'+
+          '<button class="btn btn-ghost rule-edit-btn" data-id="'+r.id+'">Edit</button>'+
+          '<button class="btn btn-ghost rule-del-btn" data-id="'+r.id+'">Delete</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
   }
-  saveAutomationRules();
-  document.getElementById('automationRuleOverlay').classList.remove('open');
-  renderAutomationRulesList();
-});
-document.getElementById('arModalClose').addEventListener('click', function(){ document.getElementById('automationRuleOverlay').classList.remove('open'); });
-document.getElementById('automationRuleOverlay').addEventListener('click', function(ev){
-  if(ev.target.id==='automationRuleOverlay') document.getElementById('automationRuleOverlay').classList.remove('open');
+  Array.prototype.forEach.call(el.querySelectorAll('.rule-enable-cb'), function(cb){
+    cb.addEventListener('change', function(){
+      var r = automationSettings.rules.find(function(x){ return x.id===cb.getAttribute('data-id'); });
+      if(r){ r.enabled = cb.checked; saveAutomationSettings(); logActivity('Automation rule <b>'+r.name+'</b> '+(r.enabled?'enabled':'disabled')); renderAutomationRules(); }
+    });
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('.rule-edit-btn'), function(b){
+    b.addEventListener('click', function(){
+      var r = automationSettings.rules.find(function(x){ return x.id===b.getAttribute('data-id'); });
+      if(r){ editingRuleId = r.id; ruleFormDraft = JSON.parse(JSON.stringify(r)); renderAutomationRuleForm(); }
+    });
+  });
+  Array.prototype.forEach.call(el.querySelectorAll('.rule-del-btn'), function(b){
+    b.addEventListener('click', function(){
+      var id = b.getAttribute('data-id');
+      var r = automationSettings.rules.find(function(x){ return x.id===id; });
+      if(!confirm('Delete rule "'+(r?r.name:'')+'"?')) return;
+      automationSettings.rules = automationSettings.rules.filter(function(x){ return x.id!==id; });
+      if(editingRuleId===id){ editingRuleId=null; ruleFormDraft=null; renderAutomationRuleForm(); }
+      saveAutomationSettings(); renderAutomationRules();
+    });
+  });
+}
+
+function renderAutomationRuleForm(){
+  var wrap = document.getElementById('automationRuleForm');
+  if(!wrap) return;
+  if(!ruleFormDraft){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+  var d = ruleFormDraft;
+  d.conditions = d.conditions || [];
+  d.actions = (d.actions && d.actions.length) ? d.actions : [{ type:'change_status', value: STATUS[0] }];
+
+  var triggerExtra = '';
+  if(d.trigger.type==='status_changed'){
+    triggerExtra = '<label>To status (optional)<select id="rf-trigger-tostatus"><option value="">Any status</option>'+
+      STATUS.map(function(s){ return '<option value="'+s+'"'+(d.trigger.toStatus===s?' selected':'')+'>'+s+'</option>'; }).join('')+'</select></label>';
+  } else if(d.trigger.type==='due_date_approaching'){
+    triggerExtra = '<label>Days before due<input type="number" id="rf-trigger-days" min="0" max="30" value="'+(d.trigger.days!=null?d.trigger.days:1)+'" style="width:70px;"></label>';
+  }
+
+  var condRows = d.conditions.map(function(c, i){
+    var valOpts = ruleConditionValueOptions(c.field);
+    return '<div class="rf-cond-row">'+
+      '<select class="rf-cond-field" data-idx="'+i+'">'+AUTOMATION_CONDITION_FIELDS.map(function(f){ return '<option value="'+f.key+'"'+(f.key===c.field?' selected':'')+'>'+f.label+'</option>'; }).join('')+'</select>'+
+      '<span>=</span>'+
+      '<select class="rf-cond-value" data-idx="'+i+'">'+valOpts.map(function(v){ return '<option value="'+v+'"'+(v===c.value?' selected':'')+'>'+v+'</option>'; }).join('')+'</select>'+
+      '<span class="rf-cond-del" data-idx="'+i+'" title="Remove condition">&times;</span>'+
+      '</div>';
+  }).join('');
+
+  var action = d.actions[0];
+  var actionValOpts = ruleActionValueOptions(action.type);
+  var actionValueHtml = actionValOpts
+    ? '<select id="rf-action-value">'+actionValOpts.map(function(v){ return '<option value="'+v+'"'+(v===action.value?' selected':'')+'>'+v+'</option>'; }).join('')+'</select>'
+    : '<input id="rf-action-value" placeholder="'+(action.type==='add_comment'?'Comment text...':'Value')+'" value="'+(action.value||'').replace(/"/g,'&quot;')+'" style="min-width:220px;">';
+
+  wrap.innerHTML =
+    '<div class="rf-row"><label style="flex:1;">Rule name<input id="rf-name" value="'+(d.name||'').replace(/"/g,'&quot;')+'" placeholder="e.g. Escalate overdue Fund II tasks" style="width:100%;"></label></div>'+
+    '<div class="rf-row"><label>Trigger<select id="rf-trigger-type">'+AUTOMATION_TRIGGERS.map(function(t){ return '<option value="'+t.key+'"'+(t.key===d.trigger.type?' selected':'')+'>'+t.label+'</option>'; }).join('')+'</select></label>'+triggerExtra+'</div>'+
+    '<div style="margin-bottom:8px;">'+
+      '<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px;">Conditions (all must match, optional)</div>'+
+      (condRows || '<div class="hint" style="margin:0 0 6px;">No conditions \u2014 runs for every task.</div>')+
+      '<button class="btn btn-ghost" id="rf-add-cond" style="padding:4px 9px;font-size:11px;">+ Add condition</button>'+
+    '</div>'+
+    '<div class="rf-row"><label>Action<select id="rf-action-type">'+AUTOMATION_ACTIONS.map(function(a){ return '<option value="'+a.key+'"'+(a.key===action.type?' selected':'')+'>'+a.label+'</option>'; }).join('')+'</select></label><label>Value'+actionValueHtml+'</label></div>'+
+    '<div style="display:flex;gap:8px;margin-top:10px;">'+
+      '<button class="btn btn-accent" id="rf-save">Save rule</button>'+
+      '<button class="btn btn-ghost" id="rf-cancel">Cancel</button>'+
+    '</div>';
+
+  document.getElementById('rf-trigger-type').addEventListener('change', function(){
+    d.trigger = { type: this.value, toStatus: '', days: 1 };
+    renderAutomationRuleForm();
+  });
+  var toStatusSel = document.getElementById('rf-trigger-tostatus');
+  if(toStatusSel) toStatusSel.addEventListener('change', function(){ d.trigger.toStatus = this.value; });
+  var daysInp = document.getElementById('rf-trigger-days');
+  if(daysInp) daysInp.addEventListener('change', function(){ d.trigger.days = parseInt(this.value,10) || 0; });
+
+  document.getElementById('rf-name').addEventListener('input', function(){ d.name = this.value; });
+
+  Array.prototype.forEach.call(wrap.querySelectorAll('.rf-cond-field'), function(sel){
+    sel.addEventListener('change', function(){
+      var idx = parseInt(sel.getAttribute('data-idx'),10);
+      d.conditions[idx].field = sel.value;
+      d.conditions[idx].value = ruleConditionValueOptions(sel.value)[0] || '';
+      renderAutomationRuleForm();
+    });
+  });
+  Array.prototype.forEach.call(wrap.querySelectorAll('.rf-cond-value'), function(sel){
+    sel.addEventListener('change', function(){
+      var idx = parseInt(sel.getAttribute('data-idx'),10);
+      d.conditions[idx].value = sel.value;
+    });
+  });
+  Array.prototype.forEach.call(wrap.querySelectorAll('.rf-cond-del'), function(x){
+    x.addEventListener('click', function(){
+      var idx = parseInt(x.getAttribute('data-idx'),10);
+      d.conditions.splice(idx,1);
+      renderAutomationRuleForm();
+    });
+  });
+  document.getElementById('rf-add-cond').addEventListener('click', function(){
+    d.conditions.push({ field: 'fund', value: ruleConditionValueOptions('fund')[0] || '' });
+    renderAutomationRuleForm();
+  });
+
+  document.getElementById('rf-action-type').addEventListener('change', function(){
+    d.actions = [{ type: this.value, value: '' }];
+    renderAutomationRuleForm();
+  });
+  document.getElementById('rf-action-value').addEventListener(actionValOpts ? 'change' : 'input', function(){
+    d.actions[0].value = this.value;
+  });
+
+  document.getElementById('rf-cancel').addEventListener('click', function(){
+    ruleFormDraft = null; editingRuleId = null; renderAutomationRuleForm();
+  });
+  document.getElementById('rf-save').addEventListener('click', function(){
+    if(!d.name || !d.name.trim()){ alert('Give the rule a name first.'); return; }
+    d.name = d.name.trim();
+    automationSettings.rules = automationSettings.rules || [];
+    var idx = automationSettings.rules.findIndex(function(x){ return x.id===d.id; });
+    var isNew = idx < 0;
+    if(!isNew) automationSettings.rules[idx] = d; else automationSettings.rules.push(d);
+    saveAutomationSettings();
+    logActivity('Automation rule <b>'+d.name+'</b> was '+(isNew?'created':'updated'));
+    ruleFormDraft = null; editingRuleId = null;
+    renderAutomationRuleForm(); renderAutomationRules();
+  });
+}
+document.getElementById('addAutomationRuleBtn').addEventListener('click', function(){
+  editingRuleId = null;
+  ruleFormDraft = emptyRuleDraft();
+  renderAutomationRuleForm();
 });
 
-/* ---------------- Saved views ---------------- */
+/* ---------------- Saved views (shared "Team Views" + per-user "My Views") ---------------- */
+function myViewsStorageKey(){
+  return 'myViews_' + (currentSession && currentSession.user ? currentSession.user.id : 'local-device');
+}
+async function loadMyViews(){
+  myViews = (BACKEND_MODE==='supabase' && currentSession)
+    ? await loadJSON(myViewsStorageKey(), [], true)
+    : loadPersonal('myViews', []);
+}
+async function saveMyViews(){
+  if(BACKEND_MODE==='supabase' && currentSession) await Backend.set(myViewsStorageKey(), myViews, true);
+  else savePersonal('myViews', myViews);
+}
 function buildViewSnapshot(){
   return {
     assignee: filterAssignee, fund: filterFund, project: filterProject,
@@ -2268,19 +2424,19 @@ function applyViewSnapshot(v){
   updateFilterBadge();
   renderAll();
 }
-function renderSavedViews(){
-  var el = document.getElementById('savedViewsList');
-  if(!savedViews.length){ el.innerHTML = ''; return; }
-  el.innerHTML = savedViews.map(function(v){
-    var cls = 'team-chip' + (v.id===activeViewId ? ' active' : '');
+function renderViewChipList(elId, list, scope){
+  var el = document.getElementById(elId);
+  if(!list.length){ el.innerHTML = ''; return; }
+  el.innerHTML = list.map(function(v){
+    var cls = 'team-chip' + (v.id===activeViewId && scope===activeViewScope ? ' active' : '');
     return '<div class="'+cls+'" data-viewid="'+v.id+'"><span>&#128269; '+v.name+'</span><span class="chip-x" data-delview="'+v.id+'">&times;</span></div>';
   }).join('');
   Array.prototype.forEach.call(el.querySelectorAll('[data-viewid]'), function(row){
     row.addEventListener('click', function(ev){
       if(ev.target && ev.target.hasAttribute('data-delview')) return;
-      var v = savedViews.find(function(x){ return x.id===row.getAttribute('data-viewid'); });
+      var v = list.find(function(x){ return x.id===row.getAttribute('data-viewid'); });
       if(!v) return;
-      activeViewId = v.id;
+      activeViewId = v.id; activeViewScope = scope;
       applyViewSnapshot(v);
     });
   });
@@ -2288,11 +2444,16 @@ function renderSavedViews(){
     x.addEventListener('click', function(ev){
       ev.stopPropagation();
       var id = x.getAttribute('data-delview');
-      savedViews = savedViews.filter(function(v){ return v.id!==id; });
+      if(scope==='team'){ savedViews = savedViews.filter(function(v){ return v.id!==id; }); saveSavedViews(); }
+      else { myViews = myViews.filter(function(v){ return v.id!==id; }); saveMyViews(); }
       if(activeViewId===id) activeViewId = null;
-      saveSavedViews(); renderSavedViews();
+      renderSavedViews();
     });
   });
+}
+function renderSavedViews(){
+  renderViewChipList('savedViewsList', savedViews, 'team');
+  renderViewChipList('myViewsList', myViews, 'personal');
 }
 document.getElementById('saveViewBtn').addEventListener('click', function(ev){
   ev.stopPropagation();
@@ -2300,24 +2461,36 @@ document.getElementById('saveViewBtn').addEventListener('click', function(ev){
 });
 document.addEventListener('click', function(){ document.getElementById('saveViewMenu').classList.remove('open'); });
 document.getElementById('saveViewUpdateBtn').addEventListener('click', function(){
-  if(!activeViewId){ alert('No view is currently active \u2014 use "Save as new view" first.'); return; }
-  var v = savedViews.find(function(x){ return x.id===activeViewId; });
+  if(!activeViewId){ alert('No view is currently active \u2014 use "Save as new team/personal view" first.'); return; }
+  var list = activeViewScope==='personal' ? myViews : savedViews;
+  var v = list.find(function(x){ return x.id===activeViewId; });
   if(!v) return;
   Object.assign(v, buildViewSnapshot());
-  saveSavedViews(); renderSavedViews();
+  if(activeViewScope==='personal') saveMyViews(); else saveSavedViews();
+  renderSavedViews();
 });
-document.getElementById('saveViewNewBtn').addEventListener('click', function(){
-  var name = prompt('Name this view (e.g. "My high-priority items"):','');
+document.getElementById('saveViewNewTeamBtn').addEventListener('click', function(){
+  var name = prompt('Name this team view (visible to everyone in this space):','');
   if(!name) return;
   var snap = buildViewSnapshot();
   snap.id = uid(); snap.name = name;
   savedViews.push(snap);
-  activeViewId = snap.id;
+  activeViewId = snap.id; activeViewScope = 'team';
   saveSavedViews(); renderSavedViews();
+});
+document.getElementById('saveViewNewMyBtn').addEventListener('click', function(){
+  var name = prompt('Name this personal view (only you will see it):','');
+  if(!name) return;
+  var snap = buildViewSnapshot();
+  snap.id = uid(); snap.name = name;
+  myViews.push(snap);
+  activeViewId = snap.id; activeViewScope = 'personal';
+  saveMyViews(); renderSavedViews();
 });
 document.getElementById('saveViewRevertBtn').addEventListener('click', function(){
   if(!activeViewId){ alert('No view is currently active to revert to.'); return; }
-  var v = savedViews.find(function(x){ return x.id===activeViewId; });
+  var list = activeViewScope==='personal' ? myViews : savedViews;
+  var v = list.find(function(x){ return x.id===activeViewId; });
   if(!v) return;
   applyViewSnapshot(v);
 });
@@ -2407,10 +2580,29 @@ function syncCustomizeCheckboxes(){
   document.getElementById('cz-empty').checked = customizeSettings.showEmptyGroups;
   document.getElementById('cz-wrap').checked = customizeSettings.wrapText;
   document.getElementById('cz-closed').checked = customizeSettings.showClosed;
+  document.getElementById('cz-board-groupby').value = customizeSettings.boardGroupBy || 'none';
+  customizeSettings.wipLimits = customizeSettings.wipLimits || {};
+  document.getElementById('cz-wip-limits').innerHTML = STATUS.map(function(s){
+    var v = customizeSettings.wipLimits[s];
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'+
+      '<span class="status-pill" style="background:'+STATUS_COLOR[s]+';flex:1;">'+s+'</span>'+
+      '<input type="number" min="0" class="cz-wip-input" data-status="'+s+'" value="'+(v!=null?v:'')+'" style="width:60px;border:1px solid var(--line);border-radius:8px;padding:5px;">'+
+      '</div>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('.cz-wip-input'), function(inp){
+    inp.addEventListener('change', function(){
+      var s = inp.getAttribute('data-status');
+      var v = inp.value.trim();
+      if(v==='') delete customizeSettings.wipLimits[s];
+      else customizeSettings.wipLimits[s] = parseInt(v,10);
+      saveCustomizeSettings(); renderAll();
+    });
+  });
 }
 document.getElementById('cz-empty').addEventListener('change', function(){ customizeSettings.showEmptyGroups = this.checked; saveCustomizeSettings(); renderAll(); });
 document.getElementById('cz-wrap').addEventListener('change', function(){ customizeSettings.wrapText = this.checked; saveCustomizeSettings(); renderAll(); });
 document.getElementById('cz-closed').addEventListener('change', function(){ customizeSettings.showClosed = this.checked; saveCustomizeSettings(); renderAll(); });
+document.getElementById('cz-board-groupby').addEventListener('change', function(){ customizeSettings.boardGroupBy = this.value; saveCustomizeSettings(); renderAll(); });
 document.getElementById('customizeBtn').addEventListener('click', function(){
   document.getElementById('customizePanelOverlay').classList.add('open');
 });
@@ -2420,95 +2612,6 @@ document.getElementById('customizeCloseBtn').addEventListener('click', function(
 document.getElementById('customizePanelOverlay').addEventListener('click', function(ev){
   if(ev.target.id==='customizePanelOverlay') document.getElementById('customizePanelOverlay').classList.remove('open');
 });
-
-/* ---------------- Multi-step approval chain ----------------
-   Existing tasks carried a single free-text `supervisor` field. That field
-   is kept (it still drives the quick-pick "Supervisor/Approver" select in
-   List/Board view, and always mirrors approvalChain[0]) but is now also the
-   seed for an ordered `approvalChain` array + a parallel `approvals` array
-   of {name,status,note,ts}. Editing the ordered chain happens in the task
-   modal; the list-view single-select still works for simple one-approver
-   tasks and for setting/replacing step 1. */
-function normalizeApprovals(t){
-  if(!Array.isArray(t.approvalChain)){
-    t.approvalChain = t.supervisor ? [t.supervisor] : [];
-  }
-  if(!Array.isArray(t.approvals) || t.approvals.length !== t.approvalChain.length){
-    var prev = t.approvals || [];
-    t.approvals = t.approvalChain.map(function(name, i){
-      var existing = prev[i];
-      return existing ? { name: name, status: existing.status||'pending', note: existing.note||'', ts: existing.ts } : { name: name, status: 'pending', note: '' };
-    });
-  } else {
-    t.approvals.forEach(function(a,i){ a.name = t.approvalChain[i]; });
-  }
-  if(t.approvalStep===undefined || t.approvalStep===null) t.approvalStep = 0;
-  if(t.approvalStep > t.approvalChain.length) t.approvalStep = t.approvalChain.length;
-  recomputeApprovalStatus(t);
-}
-function recomputeApprovalStatus(t){
-  if(!t.approvalChain.length){ t.approvalStatus = null; return; }
-  if(t.approvals.some(function(a){ return a.status==='rejected'; })){ t.approvalStatus = 'Rejected'; return; }
-  if(t.approvals.every(function(a){ return a.status==='approved'; })){ t.approvalStatus = 'Approved'; return; }
-  t.approvalStatus = 'Pending';
-}
-function approveCurrentStep(t, actorName, isEscalation){
-  var idx = t.approvalStep;
-  if(idx >= t.approvalChain.length) return;
-  t.approvals[idx].status = 'approved';
-  t.approvals[idx].ts = Date.now();
-  t.approvalStep = idx + 1;
-  recomputeApprovalStatus(t);
-  logActivity('<b>'+actorName+'</b> approved "'+t.deliverable+'" (step '+(idx+1)+' of '+t.approvalChain.length+')'+(isEscalation?' <i>(escalation)</i>':''));
-  if(t.approvalStep >= t.approvalChain.length){
-    logActivity('"'+t.deliverable+'" is fully approved through the chain');
-  }
-}
-function rejectChain(t, actorName, note, isEscalation){
-  var idx = t.approvalStep;
-  if(idx < t.approvalChain.length){
-    t.approvals[idx].status = 'rejected';
-    t.approvals[idx].note = note || '';
-    t.approvals[idx].ts = Date.now();
-  }
-  t.approvalNote = note || '';
-  recomputeApprovalStatus(t);
-  logActivity('<b>'+actorName+'</b> rejected "'+t.deliverable+'"'+(isEscalation?' <i>(escalation)</i>':'')+' &mdash; notifying <b>'+t.assignee+'</b>');
-}
-function moveApprover(t, i, dir){
-  var j = i + dir;
-  if(j<0 || j>=t.approvalChain.length) return;
-  var tmp = t.approvalChain[i]; t.approvalChain[i] = t.approvalChain[j]; t.approvalChain[j] = tmp;
-  var tmp2 = t.approvals[i]; t.approvals[i] = t.approvals[j]; t.approvals[j] = tmp2;
-  t.supervisor = t.approvalChain[0] || '';
-  recomputeApprovalStatus(t); saveTasks(); renderTaskModal();
-}
-function removeApprover(t, i){
-  t.approvalChain.splice(i,1);
-  t.approvals.splice(i,1);
-  if(t.approvalStep > t.approvalChain.length) t.approvalStep = t.approvalChain.length;
-  t.supervisor = t.approvalChain[0] || '';
-  recomputeApprovalStatus(t); saveTasks(); renderTaskModal(); renderAll();
-}
-function addApprover(t, name){
-  if(!name) return;
-  t.approvalChain.push(name);
-  t.approvals.push({ name: name, status: 'pending', note: '' });
-  t.supervisor = t.approvalChain[0];
-  recomputeApprovalStatus(t); saveTasks(); renderTaskModal(); renderAll();
-}
-function chainEditorHtml(t){
-  return '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line);">'+
-    '<div class="hint" style="margin-bottom:6px;">Approval chain (in order)</div>'+
-    (t.approvalChain.length ? t.approvalChain.map(function(name,i){
-      return '<div class="subtask-row"><span>'+(i+1)+'. '+name+'</span>'+
-        '<span class="st-del ar-chain-up" data-idx="'+i+'" style="margin-left:auto;'+(i===0?'opacity:.3;pointer-events:none;':'')+'" title="Move up">&#8593;</span>'+
-        '<span class="st-del ar-chain-down" data-idx="'+i+'" style="'+(i===t.approvalChain.length-1?'opacity:.3;pointer-events:none;':'')+'" title="Move down">&#8595;</span>'+
-        '<span class="st-del ar-chain-remove" data-idx="'+i+'" title="Remove">&times;</span></div>';
-    }).join('') : '<div class="empty">No approvers yet.</div>')+
-    '<div class="tm-add-row"><select id="tm-chain-add-select">'+peopleOptions().map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('')+'</select><button class="btn btn-ghost" id="tm-chain-add-btn">Add step</button></div>'+
-    '</div>';
-}
 
 /* ---------------- Task detail modal ---------------- */
 function findTask(id){ return tasks.find(function(t){ return t.id===id; }); }
@@ -2534,6 +2637,94 @@ function selField(id, label, options, value){
   }).join('')+'</select></label>';
 }
 
+function renderApprovalSection(t){
+  var appEl = document.getElementById('tm-approval');
+  t.approvalChain = t.approvalChain || [];
+  var stepIdx = currentApprovalStepIndex(t);
+  var overall = syncApprovalStatus(t);
+
+  var listHtml = t.approvalChain.length ? t.approvalChain.map(function(a, i){
+    var numCls = a.status==='Approved' ? 'done' : a.status==='Rejected' ? 'rejected' : (i===stepIdx ? 'current' : '');
+    var tagColor = a.status==='Approved' ? 'var(--completed)' : a.status==='Rejected' ? 'var(--cancelled)' : 'var(--not-started)';
+    var canRemove = canEdit() && a.status==='Pending';
+    return '<div class="chain-row">'+
+      '<span class="chain-step-num '+numCls+'">'+(i+1)+'</span>'+
+      avatarHtml(a.name)+
+      '<span class="chain-name">'+a.name+'</span>'+
+      '<span class="chain-status-tag" style="background:'+tagColor+'">'+a.status+'</span>'+
+      (canRemove ? '<span class="chain-remove" data-idx="'+i+'" title="Remove from chain">&times;</span>' : '')+
+      '</div>';
+  }).join('') : '<div class="empty">No approvers set. Add one below to enable the approval flow.</div>';
+
+  var statusLine = '';
+  if(t.approvalChain.length){
+    if(overall==='Approved') statusLine = '<div class="hint" style="color:var(--completed);font-weight:700;margin-top:6px;">Fully approved \u2014 all '+t.approvalChain.length+' step(s) signed off.</div>';
+    else if(overall==='Rejected') statusLine = '<div class="hint" style="color:var(--cancelled);font-weight:700;margin-top:6px;">Rejected'+(t.approvalNote?': '+t.approvalNote:'')+'.</div>';
+    else statusLine = '<div class="hint" style="margin-top:6px;">Awaiting approval from <b>'+t.approvalChain[stepIdx].name+'</b> \u2014 step '+(stepIdx+1)+' of '+t.approvalChain.length+'.</div>';
+  }
+
+  var currentApproverName = stepIdx>=0 ? t.approvalChain[stepIdx].name : null;
+  var isNamedApprover = !!(currentApproverName && currentProfile && currentProfile.display_name === currentApproverName);
+  var canApprove = canEdit() && stepIdx>=0 && (isNamedApprover || isApproverOrAbove());
+  var actionsHtml = '';
+  if(stepIdx>=0){
+    actionsHtml = '<div class="approval-row" style="margin-top:8px;">'+
+      (canApprove ? '<button class="btn btn-ghost" id="tm-approve">Approve step '+(stepIdx+1)+'</button><button class="btn btn-ghost" id="tm-reject">Reject</button>' :
+        '<span class="hint">Only '+currentApproverName+', or an Approver/Admin/Owner, can act on this step.</span>')+
+      (canApprove && !isNamedApprover ? '<span class="hint" style="margin-left:8px;">(escalation \u2014 you\u2019re not the listed approver)</span>' : '')+
+      '</div>';
+  }
+
+  appEl.innerHTML = listHtml + statusLine + actionsHtml +
+    (canEdit() ? '<div class="chain-add-row"><select id="tm-chain-add-select">'+
+      '<option value="">+ Add approver to chain...</option>'+
+      peopleOptions().map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('')+
+      '</select></div>' : '');
+
+  Array.prototype.forEach.call(appEl.querySelectorAll('.chain-remove'), function(x){
+    x.addEventListener('click', function(){
+      var idx = parseInt(x.getAttribute('data-idx'),10);
+      t.approvalChain.splice(idx,1);
+      t.supervisor = t.approvalChain.length ? t.approvalChain[0].name : '';
+      syncApprovalStatus(t);
+      saveTasks(); renderTaskModal();
+    });
+  });
+  var addSel = document.getElementById('tm-chain-add-select');
+  if(addSel){
+    addSel.addEventListener('change', function(){
+      var name = addSel.value; if(!name) return;
+      t.approvalChain.push({ name: name, status: 'Pending' });
+      if(t.approvalChain.length===1) t.supervisor = name;
+      syncApprovalStatus(t);
+      logActivity('<b>'+name+'</b> was added to the approval chain for "'+t.deliverable+'"');
+      saveTasks(); renderTaskModal();
+    });
+  }
+  if(canApprove){
+    document.getElementById('tm-approve').addEventListener('click', function(){
+      if(!isNamedApprover && !confirm('You are not the listed approver ("'+currentApproverName+'") for step '+(stepIdx+1)+'. Approve anyway as an escalation?')) return;
+      t.approvalChain[stepIdx].status = 'Approved';
+      var actor = currentProfile ? currentProfile.display_name : currentApproverName;
+      var nextIdx = currentApprovalStepIndex(t);
+      syncApprovalStatus(t);
+      logActivity('<b>'+actor+'</b> approved step '+(stepIdx+1)+' of "'+t.deliverable+'"'+(!isNamedApprover?' (escalation)':'')+(nextIdx<0?' \u2014 fully approved':''));
+      saveTasks(); renderTaskModal();
+    });
+    document.getElementById('tm-reject').addEventListener('click', function(){
+      if(!isNamedApprover && !confirm('You are not the listed approver ("'+currentApproverName+'") for step '+(stepIdx+1)+'. Reject anyway as an escalation?')) return;
+      var note = prompt('Reason for rejecting (optional):','');
+      t.approvalChain[stepIdx].status = 'Rejected';
+      t.approvalNote = note || '';
+      syncApprovalStatus(t);
+      var actor = currentProfile ? currentProfile.display_name : currentApproverName;
+      logActivity('<b>'+actor+'</b> rejected "'+t.deliverable+'" at step '+(stepIdx+1)+(!isNamedApprover?' (escalation)':''));
+      t.comments = t.comments || [];
+      t.comments.push({ id: uid(), author: 'System', text: 'Approval rejected by '+actor+' at step '+(stepIdx+1)+(note?': '+note:'.'), ts: Date.now() });
+      saveTasks(); renderTaskModal();
+    });
+  }
+}
 function renderTaskModal(){
   var t = findTask(openTaskId);
   if(!t){ closeTaskModal(); return; }
@@ -2550,22 +2741,24 @@ function renderTaskModal(){
     selField('tm-type','Type', TYPES, t.type) +
     selField('tm-status','Status', STATUS, t.status) +
     selField('tm-collab','Collaborator/Owner', peopleOptions(), t.collaborator) +
-    selField('tm-superv','Supervisor/Approver', peopleOptions(), t.supervisor) +
     '<label>Start Date<input type="date" id="tm-start" value="'+toISODate(t.date)+'"></label>' +
     '<label>Due Date<input type="date" id="tm-due" value="'+toISODate(t.dueDate)+'"></label>' +
     selField('tm-recurrence','Repeats', ['none','daily','weekly','monthly'], t.recurrence||'none') +
     '<label>Milestone<span style="padding-top:4px;"><input type="checkbox" id="tm-milestone"'+(t.isMilestone?' checked':'')+'> Mark as milestone</span></label>';
 
   bindTmField('tm-assignee','assignee'); bindTmField('tm-project','project'); bindTmField('tm-fund','fund');
-  bindTmField('tm-workstream','workstream'); bindTmField('tm-segment','segment'); bindTmField('tm-priority','priority');
-  bindTmField('tm-type','type'); bindTmField('tm-collab','collaborator'); bindTmField('tm-superv','supervisor');
+  bindTmField('tm-workstream','workstream'); bindTmField('tm-segment','segment');
+  bindTmField('tm-type','type'); bindTmField('tm-collab','collaborator');
+  document.getElementById('tm-priority').addEventListener('change', function(){
+    t.priority = this.value; saveTasks(); runAutomationsForTrigger('priority_changed', t);
+  });
   document.getElementById('tm-status').addEventListener('change', function(){
     var oldVal = t.status;
     t.status = this.value;
     t.completedAt = t.status==='Completed' ? Date.now() : null;
     logActivity('<b>'+t.assignee+'</b> moved "'+t.deliverable+'" from '+oldVal+' to '+t.status);
-    fireAutomations('status_changed', t);
     if(t.status==='Completed') maybeSpawnRecurrence(t);
+    runAutomationsForTrigger('status_changed', t);
     saveTasks(); renderTaskModal();
   });
   document.getElementById('tm-start').addEventListener('change', function(){ t.date = this.value; saveTasks(); });
@@ -2574,61 +2767,8 @@ function renderTaskModal(){
   document.getElementById('tm-recurrence').addEventListener('change', function(){ t.recurrence = this.value; saveTasks(); });
   document.getElementById('tm-milestone').addEventListener('change', function(){ t.isMilestone = this.checked; saveTasks(); renderAll(); });
 
-  // Approval (multi-step chain)
-  var appEl = document.getElementById('tm-approval');
-  normalizeApprovals(t);
-  var currentApprover = t.approvalStep < t.approvalChain.length ? t.approvalChain[t.approvalStep] : null;
-  var isCurrentNamedApprover = !!(currentApprover && currentProfile && currentProfile.display_name === currentApprover);
-  var chainResolved = (t.approvalStatus==='Approved' || t.approvalStatus==='Rejected');
-  var canApproveNow = canEdit() && t.approvalChain.length>0 && !chainResolved && (isCurrentNamedApprover || isApproverOrAbove());
-  if(!t.approvalChain.length){
-    appEl.innerHTML = '<div class="empty">Add an approver below to start an approval chain.</div>' + chainEditorHtml(t);
-  } else {
-    var chainListHtml = t.approvalChain.map(function(name,i){
-      var st = t.approvals[i].status;
-      var color = st==='approved' ? 'var(--completed)' : st==='rejected' ? 'var(--cancelled)' : (i===t.approvalStep ? '#B45309' : 'var(--not-started)');
-      var lbl = st==='approved' ? 'Approved' : st==='rejected' ? 'Rejected' : (i===t.approvalStep ? 'Current' : 'Waiting');
-      return '<span class="approve-badge" style="background:'+color+';margin:0 6px 6px 0;">'+(i+1)+'. '+name+' \u2014 '+lbl+'</span>';
-    }).join('');
-    var stageText = t.approvalStatus==='Approved' ? 'Fully approved through the chain'
-      : t.approvalStatus==='Rejected' ? 'Rejected at step '+(t.approvalStep+1)+' of '+t.approvalChain.length
-      : 'Awaiting approval from <b>'+currentApprover+'</b>, step '+(t.approvalStep+1)+' of '+t.approvalChain.length;
-    appEl.innerHTML = '<div style="display:flex;flex-wrap:wrap;">'+chainListHtml+'</div>'+
-      '<div class="approval-row" style="margin-top:4px;"><span class="hint" style="font-size:12.5px;">'+stageText+'</span></div>'+
-      (canApproveNow ? '<div class="approval-row" style="margin-top:8px;"><button class="btn btn-ghost" id="tm-approve">Approve'+(!isCurrentNamedApprover?' (escalate)':'')+'</button><button class="btn btn-ghost" id="tm-reject">Reject'+(!isCurrentNamedApprover?' (escalate)':'')+'</button></div>' :
-        (!chainResolved ? '<div class="hint" style="margin-top:6px;">Only '+currentApprover+', or an Approver/Admin/Owner, can act on this step.</div>' : ''))+
-      (canEdit() ? chainEditorHtml(t) : '');
-  }
-  if(canApproveNow){
-    document.getElementById('tm-approve').addEventListener('click', function(){
-      if(!isCurrentNamedApprover && !confirm('You are not the listed approver ("'+currentApprover+'") for this step. Approve anyway as an escalation?')) return;
-      approveCurrentStep(t, currentProfile ? currentProfile.display_name : currentApprover, !isCurrentNamedApprover);
-      saveTasks(); renderTaskModal(); renderAll();
-    });
-    document.getElementById('tm-reject').addEventListener('click', function(){
-      if(!isCurrentNamedApprover && !confirm('You are not the listed approver ("'+currentApprover+'") for this step. Reject anyway as an escalation?')) return;
-      var note = prompt('Reason for rejecting (optional):','');
-      rejectChain(t, currentProfile ? currentProfile.display_name : currentApprover, note, !isCurrentNamedApprover);
-      saveTasks(); renderTaskModal(); renderAll();
-    });
-  }
-  if(canEdit()){
-    Array.prototype.forEach.call(appEl.querySelectorAll('.ar-chain-up'), function(x){
-      x.addEventListener('click', function(){ moveApprover(t, +x.getAttribute('data-idx'), -1); });
-    });
-    Array.prototype.forEach.call(appEl.querySelectorAll('.ar-chain-down'), function(x){
-      x.addEventListener('click', function(){ moveApprover(t, +x.getAttribute('data-idx'), 1); });
-    });
-    Array.prototype.forEach.call(appEl.querySelectorAll('.ar-chain-remove'), function(x){
-      x.addEventListener('click', function(){ removeApprover(t, +x.getAttribute('data-idx')); });
-    });
-    var chainAddBtn = document.getElementById('tm-chain-add-btn');
-    if(chainAddBtn){
-      chainAddBtn.addEventListener('click', function(){
-        addApprover(t, document.getElementById('tm-chain-add-select').value);
-      });
-    }
-  }
+  // Multi-step approval chain
+  renderApprovalSection(t);
 
   // Tags
   t.tags = t.tags || [];
@@ -2737,18 +2877,14 @@ function renderTaskModal(){
 function bindTmField(id, field){
   var t = findTask(openTaskId);
   document.getElementById(id).addEventListener('change', function(){
-    t[field] = this.value;
-    if(field==='priority') fireAutomations('priority_changed', t);
-    if(field==='supervisor'){ t.approvalChain = t.approvalChain && t.approvalChain.length ? [this.value].concat(t.approvalChain.slice(1)) : (this.value?[this.value]:[]); t.approvals=[]; normalizeApprovals(t); }
-    saveTasks(); if(field==='status' || field==='supervisor') renderTaskModal();
+    t[field] = this.value; saveTasks(); if(field==='status') renderTaskModal();
   });
 }
 function maybeAutoComplete(t){
-  if(!isBuiltinRuleEnabled('builtin-autocomplete-subtasks')) return;
+  if(!automationSettings.autoCompleteSubtasks) return;
   if(t.subtasks && t.subtasks.length && t.subtasks.every(function(s){ return s.done; }) && t.status!=='Completed'){
     t.status = 'Completed'; t.completedAt = Date.now();
     logActivity('Auto-completed "'+t.deliverable+'" \u2014 all subtasks done');
-    fireAutomations('status_changed', t);
     maybeSpawnRecurrence(t);
   }
 }
@@ -2764,9 +2900,10 @@ document.addEventListener('click', function(){
 });
 function buildCsv(){
   var ft = filteredTasks();
-  var cols = ['Deliverable','Assignee','Project','Fund','Workstream','Segment','Priority','Type','Collaborator','Supervisor','Start Date','Due Date','Status','Notes'];
+  var cols = ['Deliverable','Assignee','Project','Fund','Workstream','Segment','Priority','Type','Collaborator','Approval Chain','Approval Status','Start Date','Due Date','Status','Notes'];
   var rows = ft.map(function(t){
-    return [t.deliverable,t.assignee,t.project||'General',t.fund,t.workstream,t.segment,t.priority,t.type,t.collaborator,t.supervisor,fmtDate(t.date),fmtDate(t.dueDate),t.status,t.notes]
+    var chainStr = (t.approvalChain||[]).map(function(a){ return a.name+' ('+a.status+')'; }).join(' > ');
+    return [t.deliverable,t.assignee,t.project||'General',t.fund,t.workstream,t.segment,t.priority,t.type,t.collaborator,chainStr,syncApprovalStatus(t)||'',fmtDate(t.date),fmtDate(t.dueDate),t.status,t.notes]
       .map(function(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }).join(',');
   });
   return cols.join(',') + '\n' + rows.join('\n');
@@ -2848,8 +2985,13 @@ document.getElementById('darkToggleBtn').addEventListener('click', function(){
 function renderBoard(){
   var ft = filteredTasks();
   var el = document.getElementById('boardCols');
-  el.innerHTML = STATUS.map(function(status){
-    var cards = ft.filter(function(t){ return t.status===status; });
+  var groupBy = customizeSettings.boardGroupBy || 'none';
+  var wip = customizeSettings.wipLimits || {};
+
+  function colHtml(status, laneTasks, laneKey){
+    var cards = laneTasks.filter(function(t){ return t.status===status; });
+    var limit = wip[status];
+    var overLimit = limit!=null && cards.length > limit;
     var cardsHtml = cards.map(function(t){
       return '<div class="board-card" draggable="true" data-id="'+t.id+'">'+
         '<div class="bc-title">'+(t.isMilestone?'\u25c6 ':'')+t.deliverable+(isBlocked(t)?' <span class="status-pill" style="background:#64748B;font-size:9px;">Blocked</span>':'')+'</div>'+
@@ -2857,12 +2999,27 @@ function renderBoard(){
         '<div class="bc-row" style="margin-top:6px;">'+avatarHtml(t.assignee)+'<span'+(isOverdue(t)?' style="color:var(--cancelled);font-weight:700;"':'')+'>'+fmtDate(t.dueDate)+'</span></div>'+
         '</div>';
     }).join('');
-    return '<div class="board-col" data-status="'+status+'">'+
-      '<div class="board-col-head"><span class="status-pill" style="background:'+STATUS_COLOR[status]+'">'+status.toUpperCase()+'</span><span class="cnt">'+cards.length+'</span></div>'+
+    return '<div class="board-col" data-status="'+status+'" data-lane="'+(laneKey!=null?laneKey:'')+'">'+
+      '<div class="board-col-head"'+(overLimit?' style="background:#FDECEF;border-radius:8px;"':'')+'><span class="status-pill" style="background:'+STATUS_COLOR[status]+'">'+status.toUpperCase()+'</span><span class="cnt"'+(overLimit?' style="color:var(--cancelled);font-weight:800;"':'')+'>'+cards.length+(limit!=null?'/'+limit:'')+'</span></div>'+
       '<div class="board-cards">'+cardsHtml+'</div>'+
-      '<div class="board-add" data-addfor="'+status+'">+ Add card</div>'+
+      '<div class="board-add" data-addfor="'+status+'" data-lane="'+(laneKey!=null?laneKey:'')+'">+ Add card</div>'+
       '</div>';
-  }).join('');
+  }
+
+  if(groupBy==='none'){
+    el.innerHTML = STATUS.map(function(status){ return colHtml(status, ft, null); }).join('');
+  } else {
+    var laneValues = groupBy==='assignee' ? team.slice() : PRIORITIES.slice();
+    el.innerHTML = laneValues.map(function(lv){
+      var laneTasks = ft.filter(function(t){ return (groupBy==='assignee' ? t.assignee : t.priority)===lv; });
+      return '<div style="width:100%;margin-bottom:18px;">'+
+        '<div style="font-weight:800;font-size:12.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">'+
+          (groupBy==='assignee'?avatarHtml(lv):'')+'<span'+(groupBy==='priority'?' class="priority-'+lv+'"':'')+'>'+lv+'</span><span class="n">('+laneTasks.length+')</span>'+
+        '</div>'+
+        '<div class="board" style="padding-bottom:4px;">'+STATUS.map(function(status){ return colHtml(status, laneTasks, lv); }).join('')+'</div>'+
+        '</div>';
+    }).join('');
+  }
 
   Array.prototype.forEach.call(el.querySelectorAll('.board-card'), function(c){
     c.addEventListener('dragstart', function(){ dragId = c.getAttribute('data-id'); c.classList.add('drag'); });
@@ -2878,9 +3035,12 @@ function renderBoard(){
         var oldVal = t.status;
         t.status = col.getAttribute('data-status');
         t.completedAt = t.status==='Completed' ? Date.now() : null;
+        var lane = col.getAttribute('data-lane');
+        if(groupBy==='assignee' && lane) t.assignee = lane;
+        else if(groupBy==='priority' && lane) t.priority = lane;
         logActivity('<b>'+t.assignee+'</b> moved "'+t.deliverable+'" from '+oldVal+' to '+t.status);
-        fireAutomations('status_changed', t);
         if(t.status==='Completed') maybeSpawnRecurrence(t);
+        runAutomationsForTrigger('status_changed', t);
         saveTasks(); renderAll();
       }
     });
@@ -2888,7 +3048,12 @@ function renderBoard(){
   Array.prototype.forEach.call(el.querySelectorAll('.board-add'), function(a){
     a.addEventListener('click', function(){
       var name = prompt('New card name');
-      if(name){ addTaskWithStatus(a.getAttribute('data-addfor'), filterAssignee || team[0], name); renderAll(); }
+      if(!name) return;
+      var lane = a.getAttribute('data-lane');
+      var assignee = (groupBy==='assignee' && lane) ? lane : (filterAssignee || team[0]);
+      var t = addTaskWithStatus(a.getAttribute('data-addfor'), assignee, name);
+      if(groupBy==='priority' && lane){ t.priority = lane; saveTasks(); }
+      renderAll();
     });
   });
 }
@@ -2994,17 +3159,90 @@ function renderTimeline(){
   var rowsEl = document.getElementById('tlRows');
   if(!ft.length){ rowsEl.innerHTML = '<div class="empty">No dated tasks to plot for this filter.</div>'; return; }
   var todayLine = '<div style="position:absolute;left:'+todayPct.toFixed(1)+'%;top:0;bottom:0;width:2px;background:var(--accent);"></div>';
-  rowsEl.innerHTML = '<div style="position:relative;">' + todayLine + ft.map(function(t){
+  var rowsHtml = ft.map(function(t){
     var d = parseDate(t.dueDate);
     var pct = pctOf(d);
+    var blockedHere = isBlocked(t);
     var marker = t.isMilestone
-      ? '<div class="tl-bar" style="left:'+pct.toFixed(1)+'%;width:14px;height:14px;top:1px;transform:rotate(45deg);border-radius:3px;background:var(--accent);" title="Milestone \u2014 '+t.status+' \u2014 due '+fmtDate(t.dueDate)+'"></div>'
-      : '<div class="tl-bar" style="left:'+pct.toFixed(1)+'%;width:14px;background:'+STATUS_COLOR[t.status]+'" title="'+t.status+' \u2014 due '+fmtDate(t.dueDate)+'"></div>';
+      ? '<div class="tl-bar" data-id="'+t.id+'" style="left:'+pct.toFixed(1)+'%;width:14px;height:14px;top:1px;transform:rotate(45deg);border-radius:3px;background:var(--accent);cursor:grab;" title="Milestone \u2014 '+t.status+' \u2014 due '+fmtDate(t.dueDate)+' (drag to reschedule)"></div>'
+      : '<div class="tl-bar" data-id="'+t.id+'" style="left:'+pct.toFixed(1)+'%;width:14px;background:'+STATUS_COLOR[t.status]+';cursor:grab;'+(blockedHere?'outline:2px solid #64748B;':'')+'" title="'+t.status+' \u2014 due '+fmtDate(t.dueDate)+' (drag to reschedule)"></div>';
     return '<div class="tl-row">'+
       '<div class="tl-label" title="'+t.deliverable+'">'+avatarHtml(t.assignee)+'<span>'+(t.isMilestone?'\u25c6 ':'')+t.deliverable+'</span></div>'+
-      '<div class="tl-track">'+marker+'</div>'+
+      '<div class="tl-track" data-id="'+t.id+'">'+marker+'</div>'+
       '</div>';
-  }).join('') + '</div>';
+  }).join('');
+  rowsEl.innerHTML = '<div id="tlRowsInner" style="position:relative;">' + todayLine + rowsHtml +
+    '<svg id="tlDepSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;"></svg>' +
+    '</div>';
+
+  requestAnimationFrame(function(){ drawTimelineDependencies(ft); });
+  bindTimelineDrag(ft, rangeStart, totalMs);
+}
+
+function drawTimelineDependencies(ft){
+  var svg = document.getElementById('tlDepSvg');
+  var inner = document.getElementById('tlRowsInner');
+  if(!svg || !inner) return;
+  var innerRect = inner.getBoundingClientRect();
+  var lines = [];
+  ft.forEach(function(t){
+    (t.blockedBy||[]).forEach(function(bid){
+      var blocker = ft.find(function(x){ return x.id===bid; });
+      if(!blocker) return;
+      var fromBar = inner.querySelector('.tl-bar[data-id="'+bid+'"]');
+      var toBar = inner.querySelector('.tl-bar[data-id="'+t.id+'"]');
+      if(!fromBar || !toBar) return;
+      var fr = fromBar.getBoundingClientRect(), tr = toBar.getBoundingClientRect();
+      var x1 = fr.left - innerRect.left + fr.width/2, y1 = fr.top - innerRect.top + fr.height/2;
+      var x2 = tr.left - innerRect.left, y2 = tr.top - innerRect.top + tr.height/2;
+      var stillOpen = blocker.status!=='Completed' && blocker.status!=='Cancelled';
+      lines.push('<path d="M'+x1+','+y1+' C'+(x1+30)+','+y1+' '+(x2-30)+','+y2+' '+x2+','+y2+'" stroke="'+(stillOpen?'#DC2626':'#94A3B8')+'" stroke-width="1.5" fill="none" marker-end="url(#tlArrow)" opacity="0.85"/>');
+    });
+  });
+  svg.innerHTML = '<defs><marker id="tlArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94A3B8"/></marker></defs>' + lines.join('');
+}
+
+function bindTimelineDrag(ft, rangeStart, totalMs){
+  var container = document.getElementById('tlRowsInner');
+  if(!container) return;
+  Array.prototype.forEach.call(container.querySelectorAll('.tl-bar'), function(bar){
+    bar.addEventListener('mousedown', function(ev){
+      ev.preventDefault();
+      var id = bar.getAttribute('data-id');
+      var t = tasks.find(function(x){ return x.id===id; });
+      if(!t || !canEdit()) return;
+      var track = bar.parentElement;
+      var trackRect = track.getBoundingClientRect();
+      var dependents = tasks.filter(function(x){ return (x.blockedBy||[]).indexOf(id)>=0; });
+      bar.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+      dependents.forEach(function(dep){
+        var depBar = container.querySelector('.tl-bar[data-id="'+dep.id+'"]');
+        if(depBar) depBar.style.boxShadow = '0 0 0 3px rgba(201,162,39,.55)';
+      });
+      function clampPct(clientX){ return Math.max(0, Math.min(98, ((clientX - trackRect.left) / trackRect.width) * 100)); }
+      function onMove(mv){ bar.style.left = clampPct(mv.clientX).toFixed(1)+'%'; }
+      function onUp(mv){
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.userSelect = '';
+        dependents.forEach(function(dep){
+          var depBar = container.querySelector('.tl-bar[data-id="'+dep.id+'"]');
+          if(depBar) depBar.style.boxShadow = '';
+        });
+        var pct = clampPct(mv.clientX);
+        var newDate = new Date(rangeStart.getTime() + (pct/100) * totalMs);
+        var oldDue = t.dueDate;
+        t.dueDate = dateToISO(newDate);
+        if(t.dueDate === oldDue){ renderTimeline(); return; }
+        logActivity('<b>'+t.assignee+'</b> rescheduled "'+t.deliverable+'" from '+fmtDate(oldDue)+' to '+fmtDate(t.dueDate)+' (dragged on timeline)');
+        if(dependents.length) logActivity(dependents.length+' downstream task(s) depend on "'+t.deliverable+'" \u2014 their dates were left as-is, review them.');
+        saveTasks(); renderTimeline();
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
 }
 
 /* ---------------- Dashboard view ---------------- */
@@ -3391,12 +3629,14 @@ document.getElementById('notifyEnableBtn').addEventListener('click', function(){
 function startNotifyPolling(){
   if(notifyPollTimer) return;
   notifyPollTimer = setInterval(async function(){
-    if(!notifyAsName) return;
     var freshTasks = await loadJSON('tasks', tasks, true);
     var freshLastSeen = await loadJSON('lastSeen', lastSeen, true);
     var freshTeam = await loadJSON('team', team, true);
+    var freshAutomation = await loadJSON('automationSettings', automationSettings, true);
     tasks = freshTasks; lastSeen = freshLastSeen; team = freshTeam;
-    tasks.forEach(normalizeApprovals);
+    automationSettings = freshAutomation; automationSettings.rules = automationSettings.rules || [];
+    checkDueDateAutomations();
+    if(!notifyAsName){ renderAll(); return; }
     var n = unreadCountFor(notifyAsName);
     if(n > notifyPrevUnread && typeof Notification !== 'undefined' && Notification.permission==='granted'){
       try{
@@ -3404,8 +3644,7 @@ function startNotifyPolling(){
       }catch(e){ console.error(e); }
     }
     notifyPrevUnread = n;
-    checkDueDateAutomations();
-    if(isBuiltinRuleEnabled('builtin-duesoon') && typeof Notification !== 'undefined' && Notification.permission==='granted'){
+    if(automationSettings.notifyDueSoon && typeof Notification !== 'undefined' && Notification.permission==='granted'){
       var tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(0,0,0,0);
       var tomorrowEnd = new Date(tomorrow); tomorrowEnd.setHours(23,59,59,999);
       tasks.forEach(function(t){
@@ -3540,7 +3779,7 @@ Array.prototype.forEach.call(document.querySelectorAll('.dtab'), function(tab){
     document.getElementById('dtab-automations').style.display = which==='automations' ? 'block' : 'none';
     document.getElementById('dtab-reset').style.display = which==='reset' ? 'block' : 'none';
     if(which==='projects') renderProjectsList();
-    if(which==='automations') renderAutomationRulesList();
+    if(which==='automations') renderAutomationRules();
   });
 });
 document.getElementById('calPrev').addEventListener('click', function(){ calDate = new Date(calDate.getFullYear(), calDate.getMonth()-1, 1); renderCalendar(); });
@@ -3590,11 +3829,10 @@ document.getElementById('importBtn').addEventListener('click', function(){
       notes: (cols[11]||'').trim(), createdAt: Date.now(),
       completedAt: STATUS.indexOf((cols[10]||'').trim())>=0 && (cols[10]||'').trim()==='Completed' ? Date.now() : null,
       project: filterProject || projects[0] || 'General',
-      subtasks: [], comments: [], attachments: [], approvalStatus: null, approvalNote: '',
-      approvalChain: [], approvals: [], approvalStep: 0,
+      subtasks: [], comments: [], attachments: [], approvalChain: [], approvalStatus: null, approvalNote: '',
       blockedBy: [], recurrence: 'none', isMilestone: false, order: (tasks.length+1)*10, tags: []
     };
-    normalizeApprovals(t);
+    migrateTaskApprovals(t);
     tasks.push(t); added++;
   });
   saveTasks(); renderAll();
@@ -3704,13 +3942,12 @@ document.getElementById('uploadImportBtn').addEventListener('click', function(){
       notes: colMap.notes!==undefined ? String(row[colMap.notes]||'').trim() : '',
       createdAt: Date.now(),
       project: filterProject || projects[0] || 'General',
-      subtasks: [], comments: [], attachments: [], approvalStatus: null, approvalNote: '',
-      approvalChain: [], approvals: [], approvalStep: 0,
+      subtasks: [], comments: [], attachments: [], approvalChain: [], approvalStatus: null, approvalNote: '',
       blockedBy: [], recurrence: 'none', isMilestone: false, order: (tasks.length+1)*10, tags: []
     };
+    migrateTaskApprovals(t);
     t.completedAt = t.status==='Completed' ? Date.now() : null;
     if(!t.deliverable) t.deliverable = 'Untitled deliverable';
-    normalizeApprovals(t);
     tasks.push(t); added++;
   });
   saveTasks(); renderAll();
@@ -3728,8 +3965,7 @@ document.getElementById('clearTasksBtn').addEventListener('click', function(){
 });
 document.getElementById('resetBtn').addEventListener('click', function(){
   if(!confirm("This clears everything and reloads sample data. Continue?")) return;
-  tasks = SEED_TASKS.map(function(t){ return Object.assign({}, t); });
-  tasks.forEach(normalizeApprovals);
+  tasks = SEED_TASKS.slice();
   team = DEFAULT_TEAM.slice();
   projects = DEFAULT_PROJECTS.slice();
   lastSeen = {};
@@ -3743,20 +3979,17 @@ document.getElementById('resetBtn').addEventListener('click', function(){
 /* ---------------- Init ---------------- */
 async function initApp(){
   tasks = await loadJSON('tasks', SEED_TASKS.slice());
+  tasks.forEach(migrateTaskApprovals);
   team = await loadJSON('team', DEFAULT_TEAM.slice());
   projects = await loadJSON('projects', DEFAULT_PROJECTS.slice());
   savedViews = await loadJSON('savedViews', []);
-  automationRules = await loadJSON('automationRules', null);
-  if(!automationRules){
-    var legacySettings = await loadJSON('automationSettings', { autoCompleteSubtasks: true, notifyDueSoon: false });
-    automationRules = [
-      { id:'builtin-autocomplete-subtasks', builtin:true, name:'Auto-complete when all subtasks are done', enabled: !!legacySettings.autoCompleteSubtasks, trigger:{type:'all_subtasks_done'}, conditions:[], actions:[{type:'set_status', value:'Completed'}] },
-      { id:'builtin-duesoon', builtin:true, name:'Notify assignee 1 day before due (this device)', enabled: !!legacySettings.notifyDueSoon, trigger:{type:'due_approaching'}, conditions:[], actions:[{type:'notify', value:'assignee'}] }
-    ];
-    saveAutomationRules();
-  }
-  tasks.forEach(normalizeApprovals);
-  var loadedCustomize = loadPersonal('customizeSettings', { showEmptyGroups: true, wrapText: false, showClosed: true });
+  await loadMyViews();
+  automationSettings = await loadJSON('automationSettings', { autoCompleteSubtasks: true, notifyDueSoon: false, rules: [] });
+  automationSettings.rules = automationSettings.rules || [];
+  syncAutomationCheckboxes();
+  var loadedCustomize = loadPersonal('customizeSettings', { showEmptyGroups: true, wrapText: false, showClosed: true, boardGroupBy: 'none', wipLimits: {} });
+  loadedCustomize.wipLimits = loadedCustomize.wipLimits || {};
+  loadedCustomize.boardGroupBy = loadedCustomize.boardGroupBy || 'none';
   customizeSettings = loadedCustomize;
   syncCustomizeCheckboxes();
   chatMessages = await loadJSON('chatMessages', []);
@@ -3769,8 +4002,8 @@ async function initApp(){
   smartInitialCalendarMonth();
   if(window.__chartReady) await window.__chartReady;
   renderAll();
+  renderAutomationRules();
   checkDueDateAutomations();
-  setInterval(checkDueDateAutomations, 60000);
   if(notifyAsName){
     notifyPrevUnread = unreadCountFor(notifyAsName);
     document.getElementById('notifyStatus').textContent = 'Notifying as ' + notifyAsName + ' on this device.';
