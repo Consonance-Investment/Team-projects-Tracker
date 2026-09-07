@@ -116,8 +116,9 @@ window.__supabaseLibReady = loadScriptWithFallback([
   .drawer-row label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:flex;flex-direction:column;gap:4px;}
   input[type="file"]{font-size:12px;}
   #mappingArea{display:none;margin-top:10px;}
+  .map-table-wrap{max-height:340px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;}
   .map-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;}
-  .map-table th{background:#F1F2F7;text-align:left;padding:6px 8px;font-size:10.5px;text-transform:uppercase;color:var(--muted);}
+  .map-table th{background:#F1F2F7;text-align:left;padding:6px 8px;font-size:10.5px;text-transform:uppercase;color:var(--muted);position:sticky;top:0;}
   .map-table td{padding:6px 8px;border-bottom:1px solid var(--line);}
   .map-table select{width:100%;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px;}
 
@@ -505,12 +506,13 @@ window.__supabaseLibReady = loadScriptWithFallback([
     </div>
 
     <div id="drawer">
-      <div class="drawer-tabs">
+      <div class="drawer-tabs" style="display:flex;align-items:center;">
         <button class="dtab active" data-dtab="upload">Upload Sheet</button>
         <button class="dtab" data-dtab="paste">Paste Rows</button>
         <button class="dtab" data-dtab="projects">Projects</button>
         <button class="dtab" data-dtab="automations">Automations</button>
         <button class="dtab" data-dtab="reset">Reset Data</button>
+        <button class="btn btn-ghost" id="drawerCloseBtn" title="Close" style="margin-left:auto;padding:4px 10px;font-size:14px;line-height:1;">\u2715</button>
       </div>
 
       <div id="dtab-upload">
@@ -521,7 +523,7 @@ window.__supabaseLibReady = loadScriptWithFallback([
           <label>File<input type="file" id="uploadFile" accept=".xlsx,.xls,.csv"></label>
         </div>
         <div id="mappingArea">
-          <table class="map-table" id="mappingTable"></table>
+          <div class="map-table-wrap"><table class="map-table" id="mappingTable"></table></div>
           <button class="btn btn-primary" id="uploadImportBtn">Import mapped rows</button>
           <span class="hint" id="uploadMsg"></span>
         </div>
@@ -1690,9 +1692,15 @@ async function saveAutomationSettings(){ await Backend.set('automationSettings',
 async function saveCustomizeSettings(){ savePersonal('customizeSettings', customizeSettings); }
 async function saveChatMessages(){ await Backend.set('chatMessages', chatMessages, true); }
 function logActivity(text){
-  activity.unshift({ ts: Date.now(), text: text });
+  activity.unshift({ id: 'a_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), ts: Date.now(), text: text });
   if(activity.length > 100) activity = activity.slice(0,100);
   saveActivity();
+}
+function deleteActivityEntry(id){
+  activity = activity.filter(function(a){ return a.id!==id; });
+  saveActivity();
+  renderActivityFeedFull();
+  renderActivityFeed();
 }
 function timeAgo(ts){
   var diff = Math.max(0, Date.now()-ts);
@@ -3491,9 +3499,17 @@ async function renderActivityFeedFull(){
   activity = await loadJSON('activity', activity, true);
   var el = document.getElementById('activityFeedFull');
   if(!activity.length){ el.innerHTML = '<div class="empty">No activity yet \u2014 changes you make will show up here.</div>'; return; }
+  var canDelete = isApproverOrAbove();
   el.innerHTML = activity.slice(0,150).map(function(a){
-    return '<div class="activity-row"><span>'+a.text+'</span><span class="a-time">'+timeAgo(a.ts)+'</span></div>';
+    return '<div class="activity-row"><span>'+a.text+'</span><span class="a-time">'+timeAgo(a.ts)+
+      (canDelete ? ' <button class="btn btn-ghost act-del" data-id="'+(a.id||'')+'" title="Delete this entry" style="padding:0 4px;font-size:11px;line-height:1;">\u2715</button>' : '') +
+      '</span></div>';
   }).join('');
+  if(canDelete){
+    Array.prototype.forEach.call(el.querySelectorAll('.act-del'), function(btn){
+      btn.addEventListener('click', function(){ deleteActivityEntry(btn.getAttribute('data-id')); });
+    });
+  }
 }
 
 /* ---------------- Embed view ---------------- */
@@ -3809,6 +3825,9 @@ document.getElementById('aiCreateGoBtn').addEventListener('click', async functio
 });
 document.getElementById('manageBtn').addEventListener('click', function(){
   document.getElementById('drawer').classList.toggle('open');
+});
+document.getElementById('drawerCloseBtn').addEventListener('click', function(){
+  document.getElementById('drawer').classList.remove('open');
 });
 Array.prototype.forEach.call(document.querySelectorAll('.dtab'), function(tab){
   tab.addEventListener('click', function(){
