@@ -895,7 +895,7 @@ window.__supabaseLibReady = loadScriptWithFallback([
       <button class="btn btn-ghost" id="manageRolesCloseBtn">Close</button>
     </div>
     <div class="tm-body">
-      <p class="hint">Owner &amp; Admin: full control, including managing roles. Approver: can approve/reject any task, plus everything a Member can do. Member: create, edit, and comment on tasks. Guest: read-only.</p>
+      <p class="hint">Owner &amp; Admin: full control, including managing roles. Supervisor: can approve/reject any task (escalation), plus everything a Member can do. Member: create, edit, and comment on tasks. Guest: read-only.</p>
       <div id="manageRolesList"><div class="empty">Loading...</div></div>
     </div>
   </div>
@@ -930,14 +930,15 @@ const AVATAR_COLORS = ["#2F6FED","#16A34A","#C9A227","#DC2626","#8B5CF6","#0EA5E
 const DEFAULT_TEAM = ["Jadesola","Emmanuel","Muhammad","Grace","Nicole"];
 const DEFAULT_PROJECTS = ["General"];
 const ROLES = ["owner","admin","approver","member","guest"];
-const ROLE_LABELS = { owner:"Owner", admin:"Admin", approver:"Approver", member:"Member", guest:"Guest" };
+const ROLE_LABELS = { owner:"Owner", admin:"Admin", approver:"Supervisor", member:"Member", guest:"Guest" };
+const ROLE_COLORS = { owner:"#C9A227", admin:"#2F6FED", approver:"#8B5CF6", member:"#16A34A", guest:"#94A3B8" };
 const TOUR_STEPS = [
   { title:"Welcome to Team Ops Tracker", text:"A quick tour of the basics \u2014 takes about 30 seconds. You can skip anytime and reopen it later from \u201cShow product tour\u201d in the sidebar.", target:null },
   { title:"Add a task", text:"Use \u201c+ Task\u201d to add a task, milestone, or describe one in plain English and let AI fill in the details.", target:"#quickAddBtn" },
   { title:"Switch views", text:"Jump between List, Board, Calendar, Timeline, and Dashboard to see the same tasks in different ways.", target:".nav-item[data-view=\"board\"]" },
   { title:"Notify me as\u2026", text:"Pick your name here and hit Enable to get a badge on this tab (and browser notifications, if allowed) whenever a new task lands in your inbox.", target:"#notifyAsSelect" },
   { title:"Filters & Customize", text:"Filters narrow down what you see (status, priority, tags, due date). Customize controls how views display, like showing closed tasks or wrapping text.", target:"#filtersBtn" },
-  { title:"Approvals", text:"Open any task and look for the Approval section. Whoever is set as Supervisor/Approver on a task can approve or reject it right there \u2014 Approvers, Admins, and Owners can also approve as an escalation.", target:null }
+  { title:"Approvals", text:"Open any task and look for the Approval section. Whoever is set as Supervisor/Approver on a task can approve or reject it right there \u2014 Supervisors, Admins, and Owners can also approve as an escalation.", target:null }
 ];
 const EXTRA_PEOPLE = ["MoA","External"];
 function peopleOptions(){
@@ -1455,7 +1456,7 @@ function renderUserBadge(){
   el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;padding:8px;">'+
     '<span class="avatar" style="background:'+(isAdmin()?'var(--accent)':'#3A4266')+';color:'+(isAdmin()?'#241c00':'#fff')+';">'+(currentProfile.display_name||'?').slice(0,2).toUpperCase()+'</span>'+
     '<div style="flex:1;overflow:hidden;"><div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+currentProfile.display_name+'</div>'+
-    '<div style="font-size:10px;color:#8890ac;text-transform:capitalize;">'+currentProfile.role+'</div></div>'+
+    '<span style="display:inline-block;margin-top:2px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1px 7px;border-radius:100px;background:'+(ROLE_COLORS[currentProfile.role]||'#3A4266')+';color:#fff;">'+(ROLE_LABELS[currentProfile.role]||currentProfile.role)+'</span></div>'+
     '<button class="btn btn-ghost" id="signOutBtn" style="padding:4px 8px;font-size:11px;">Sign out</button>'+
     '</div>';
   document.getElementById('signOutBtn').addEventListener('click', async function(){
